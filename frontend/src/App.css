@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=ABeeZee&family=Concert+One&family=Kanit:ital,wght@0,400;1,500&family=Work+Sans:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Acme&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Borel&family=Signika:wght@600&family=Tektur:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Maven+Pro&family=Roboto+Mono:wght@100;200&display=swap");
+
+.navdiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.logo {
+  font-family: "Acme", sans-serif;
+  margin-left: 2em;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 35px;
+  color: #b061df;
+  transition: all 0.2s ease-in-out;
+}
+
+.logo-icon {
+  margin-left: -10px;
+  display: inline-block;
+}
+
+.logo:hover {
+  transform: scale(1.2);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-links button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30px;
+  font-size: 19px;
+  width: 7em;
+  color: #b061df;
+  height: 35px;
+  font-family: "ABeeZee", sans-serif;
+  border-radius: 8px;
+  background-color: rgba(240, 240, 240, 0.781);
+  border: 3px solid #b061df;
+  transition: all 0.1s ease-in-out;
+}
+
+.nav-links button:hover {
+  width: 11em;
+  /* transform: scale(1.1); */
+  background-color: #b061df;
+  color: white;
+}
+
+.main-body-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.text-container {
+  flex: 1;
+  padding: 20px;
+  margin-left: 40px;
+}
+
+.text-heading {
+  color: #590888aa;
+  font-size: 45px;
+  font-weight: bold;
+  font-family: "Borel", cursive;
+}
+
+.description {
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
+  color: rgb(108, 108, 108);
+  font-weight: 700;
+}
+
+.lottie-container {
+  max-width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.footer {
+  padding: 10px;
+  text-align: center;
+}
+
+.parent-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-container {
+  width: 50%;
+  margin-left: 5px;
+}
+
+.right-container {
+  width: 50%;
+}
+.editor-navbar {
+  display: flex;
+  margin-left: -5px;
+  align-items: center;
+  border-bottom: 2px solid #000000; /* Add a border at the bottom */
+}
+
+.description-button,
+.subscription-button {
+  display: inline-block;
+  color: rgb(0, 0, 0);
+  width: 150px !important; /* Equal width for both buttons */
+  height: 40px !important; /* Equal height for both buttons */
+  cursor: pointer;
+  text-align: center;
+  line-height: 40px;
+}
+
+.left-container .navbar-list {
+  padding: 0;
+  margin: 0;
+}
+.description-button.active,
+.subscription-button.active {
+  background-color: #000000;
+  color: white;
+}
+.text-3xl {
+  font-size: 24px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.content-container {
+  flex-grow: 1; /* Make the content container grow to fill available vertical space */
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.constraints-container ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+.problem-tags-chip {
+  background-color: #e3b7fc !important;
+  color: rgb(0, 0, 0) !important;
+  margin-right: 5px;
+  font-size: 15px !important;
+  height: 25px !important;
+  /* border-radius: 0 !important;  */
+}
+
+.tags-container {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: #d8d8d8;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.description-content {
+  font-size: 15px;
+  font-family: "Maven Pro", sans-serif;
+  color: rgb(0, 0, 0);
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.examples-container{
+font-family: "Roboto Mono", monospace;
+margin-bottom: 30px;
+font-size: 14px;
+}
+.constraints-container {
+  font-family: "Roboto Mono", monospace;
+  font-size: 14px;
+}
+@media (max-width: 768px) {
+  .logo {
+    margin: 0; /* Reset margin for small screens */
+    font-size: 25px;
+  }
+}
+@media (max-width: 768px) {
+  .nav-links button {
+    font-size: 17px;
+    width: 5.5em;
+    height: 35px;
+  }
+}
+@media (max-width: 768px) {
+  .main-body-container {
+    flex-direction: column;
+  }
+
+  .text-container,
+  .lottie-container {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+}
