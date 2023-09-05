@@ -1,6 +1,5 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 const createData = (title, tags, description, examples, constraints) => {
   return { title, tags, description, examples, constraints };
