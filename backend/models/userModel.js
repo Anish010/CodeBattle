@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
         minLength: [8, "Password should have minimum 8 characters"],
         select: false
     },
+    questionAttempted: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Question",
+    },
+  ],
 
 })
 

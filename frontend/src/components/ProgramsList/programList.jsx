@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
+import axios from "axios";
 
 const columns = [
   { id: "slNo", label: "#", align: "center", minWidth: 20 },
@@ -52,7 +53,8 @@ function getComparator(order, orderBy) {
   if (orderBy === "difficulty") {
     return (a, b) => {
       const difficultyOrder = { Easy: 0, Medium: 1, Hard: 2 };
-      const difficultyComparison = difficultyOrder[a[orderBy]] - difficultyOrder[b[orderBy]];
+      const difficultyComparison =
+        difficultyOrder[a[orderBy]] - difficultyOrder[b[orderBy]];
       return order === "asc" ? difficultyComparison : -difficultyComparison;
     };
   }
@@ -61,8 +63,6 @@ function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
-
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -80,35 +80,8 @@ const createData = (programCode, title, difficulty, status) => {
   return { programCode, title, difficulty, status };
 };
 
-const rows = [
-  createData("TS01", "Two Sum", "Easy", "0"),
-  createData("LC42", "Trapping Rain Water", "Hard", "1"),
-  createData("FP10", "Fibonacci Series", "Medium", "0"),
-  createData("BS25", "Binary Search", "Medium", "2"),
-  createData("SG03", "String Manipulation", "Easy", "0"),
-  createData("LC01", "Longest Common Subsequence", "Medium", "1"),
-  createData("BST22", "Balanced Binary Tree", "Easy", "0"),
-  createData("MS13", "Merge Sort", "Hard", "2"),
-  createData("SS02", "Selection Sort", "Medium", "0"),
-  createData("QS09", "Quick Sort", "Hard", "1"),
-  createData("HB04", "Heapify Binary Tree", "Medium", "2"),
-  createData("AT06", "Array Traversal", "Easy", "0"),
-  createData("PM12", "Palindrome Check", "Medium", "1"),
-  createData("GC08", "Graph Connectivity", "Hard", "0"),
-  createData("BSR31", "Binary Search in Rotated Array", "Medium", "2"),
-  createData("PZ17", "Puzzle Solving", "Easy", "0"),
-  createData("DS11", "Data Structures Overview", "Easy", "1"),
-  createData("DFS19", "Depth First Search", "Medium", "2"),
-  createData("BP15", "Backtracking Problems", "Hard", "0"),
-  createData("TST21", "Trie Data Structure", "Medium", "1"),
-];
-
 function EnhancedTableHead(props) {
-  const {
-    order,
-    orderBy,
-    onRequestSort,
-  } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -146,13 +119,32 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-
-
 const ProgramList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("slNo");
+  const [rows, setRows] = useState([]);
+
+useEffect(() => {
+  axios
+    .get("http://localhost:4000/api/v1/questions")
+    .then((response) => {
+
+      const extractedData = response.data.data.map((item) => ({
+        programCode: item.code,
+        title: item.title,
+        difficulty: item.difficulty,
+      }));
+
+      setRows(extractedData);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}, []);
+
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -169,11 +161,9 @@ const ProgramList = () => {
     setPage(0);
   };
 
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  
   const dataRows = rows.map((row, index) => ({
     ...row,
     slNo: index + 1,
@@ -189,14 +179,13 @@ const ProgramList = () => {
   );
 
   return (
-  
-     <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }}>
       <Paper sx={{ margin: "auto", width: "80%", overflow: "hidden" }}>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size= "small">
+            size="small">
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
@@ -272,4 +261,4 @@ const ProgramList = () => {
   );
 };
 
-export default ProgramList ;
+export default ProgramList;

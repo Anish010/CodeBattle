@@ -15,7 +15,7 @@ function App() {
           
          <Route path="/" element={ <LandingPage />} />
           <Route path="/list" element={ <ProblemList />} />
-          <Route path="/editor" element={ <Editor />} />
+          <Route path="/editor/:id" element={ <Editor />} />
         </Routes>
       </BrowserRouter>
       <Footer />

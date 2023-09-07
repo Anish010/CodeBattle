@@ -97,15 +97,15 @@ const handleCloseLogin = () => {
 
   return (
     <>
-      <nav class="navbar">
+      <nav className="navbar">
         <div className="navdiv">
-          <div class="logo">
+          <div className="logo">
             CodeBattle
             <div className="logo-icon">
               <Lottie options={defaultOptions} height={90} width={90} />
             </div>
           </div>
-          <ul class="nav-links">
+          <ul className="nav-links">
             <li>
               <Button
                 style={{ textTransform: "none" }}
