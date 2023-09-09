@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import InputComp from "../utils/InputComp";
 import ButtonComp from "../utils/ButtonComp";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -21,21 +23,76 @@ const style = {
 
 const SignUpModal = ({
   openSignUp,
-  handleCloseSignUp,
-  handleSignUpSubmit,
-  signUpData,
-  setSignUpData,
-  emailError,
-  setEmailError,
-  passwordError,
-  setPasswordError,
-  confirmPasswordError,
-  setConfirmPasswordError,
-  emailValidationRegex,
-  passwordValidationRegex,
+  setOpenSignUp,
+  handleSignUpSuccess,
   customInputStyle,
   customButtonStyle,
 }) => {
+
+  const [signUpData, setSignUpData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  // eslint-disable-next-line
+  const [signUpError, setSignUpError] = useState(null);
+  const navigate = useNavigate();
+
+  const passwordValidationRegex =
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+  const emailValidationRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  
+  const resetErrors = () => {
+    setPasswordError("");
+    setEmailError("");
+    setConfirmPasswordError("");
+  };
+
+   const handleCloseSignUp = () => {
+    setOpenSignUp(false);
+    resetErrors();
+  };
+
+  
+  const handleSignUpSubmit = () => {
+    if (!emailValidationRegex.test(signUpData.email)) {
+      setEmailError("Please enter a valid Gmail address.");
+      console.log("Please enter a valid Gmail address.");
+      return;
+    }
+
+    if (!passwordValidationRegex.test(signUpData.password)) {
+      setPasswordError("Password does not meet the requirements.");
+      console.log("Password does not meet the requirements.");
+      return;
+    }
+
+    if (signUpData.password !== signUpData.confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+      console.log("Passwords do not match.");
+      return;
+    }
+
+    axios
+    .post("http://localhost:4000/api/v1/register", {
+      username: signUpData.username,
+      email: signUpData.email,
+      password: signUpData.password
+    })
+    .then((response) => {
+      handleSignUpSuccess();
+      navigate("/list")
+    })
+    .catch((error) => {
+      console.error("Login Error:", error.response.data);
+      setSignUpError(error.response.data.message); 
+    });
+  };
+  
   return (
     <Modal
       open={openSignUp}

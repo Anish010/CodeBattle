@@ -1,40 +1,14 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-const createData = (title, tags, description, examples, constraints) => {
-  return { title, tags, description, examples, constraints };
-};
 
-const descData = [
-  createData(
-    "Two Sum",
-    ["Easy", "Array"],
-    "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.",
-    [
-      {
-        input: "nums = [2,7,11,15], target = 9",
-        output: "[0,1]",
-        explanation: "Because nums[0] + nums[1] == 9, we return [0, 1].",
-      },
-      {
-        input: "nums = [3,2,4], target = 6",
-        output: "[1,2]",
-        explanation: "",
-      },
-    ],
-    [
-      "2 <= nums.length <= 104",
-      "-10^9 <= nums[i] <= 10^9",
-      "-10^9 <= target <= 10^9",
-      "Only one valid answer exists.",
-    ]
-  ),
-];
-const Description = () => {
+
+const Description = ({questionDetails}) => {
+
   return (
     <>
-      {descData.map((data, index) => (
-        <div className="editor-desc-container" key={index}>
+      {questionDetails && (
+        <div className="editor-desc-container">
           <Typography
             variant="h5"
             className="program-title"
@@ -44,19 +18,19 @@ const Description = () => {
               color: "#8200cd",
               letterSpacing: 4,
             }}>
-            {data.title}
+            {questionDetails.title}
           </Typography>
           <div className="tags-container">
-            {data.tags.map((tags, tagsIndex) => (
-              <Chip label={tags} className="problem-tags-chip" />
+            {questionDetails.tags.map((tag, tagIndex) => (
+              <Chip label={tag} className="problem-tags-chip" key={tagIndex} />
             ))}
           </div>
           <div className="divider" />
-          <div class="description-content" variant="body1">
-            {data.description}
+          <div className="description-content" variant="body1">
+            {questionDetails.description}
           </div>
           <div className="examples-container">
-            {data.examples.map((example, exampleIndex) => (
+            {questionDetails.exampleTestCases.map((example, exampleIndex) => (
               <div key={exampleIndex}>
                 <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                   Example {exampleIndex + 1}:
@@ -65,20 +39,24 @@ const Description = () => {
                   <span style={{ fontWeight: "bold", marginLeft: "16px" }}>
                     Input:
                   </span>{" "}
-                  <span style={{fontWeight: "bold", color: "gray" }}>{example.input}</span>
+                  <span style={{ fontWeight: "bold", color: "gray" }}>
+                    {example.input}
+                  </span>
                 </div>
                 <div sx={{ marginLeft: "16px" }} variant="body1">
                   <span style={{ fontWeight: "bold", marginLeft: "16px" }}>
                     Output:
                   </span>{" "}
-                  <span style={{fontWeight: "bold", color: "gray" }}>{example.output}</span>
+                  <span style={{ fontWeight: "bold", color: "gray" }}>
+                    {example.output}
+                  </span>
                 </div>
                 {example.explanation && (
                   <div variant="body1" sx={{ marginLeft: "16px" }}>
                     <span style={{ fontWeight: "bold", marginLeft: "16px" }}>
                       Explanation:
                     </span>
-                    <span style={{fontWeight: "bold", color: "gray" }}>
+                    <span style={{ fontWeight: "bold", color: "gray" }}>
                       {" "}
                       {example.explanation}
                     </span>
@@ -87,19 +65,25 @@ const Description = () => {
               </div>
             ))}
           </div>
-          <div className="constraints-container">
-            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-              Constraints :
-            </Typography>
-
-            <ul>
-              {data.constraints.map((constraint, constraintIndex) => (
-                <li style={{fontWeight: "bold" }} key={constraintIndex}>{constraint}</li>
-              ))}
-            </ul>
-          </div>
+          {questionDetails.constraints &&
+            questionDetails.constraints.length > 0 && (
+              <div className="constraints-container">
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Constraints :
+                </Typography>
+                <ul>
+                  {questionDetails.constraints.map(
+                    (constraint, constraintIndex) => (
+                      <li style={{ fontWeight: "bold" }} key={constraintIndex}>
+                        {constraint}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
         </div>
-      ))}
+      )}
     </>
   );
 };

@@ -48,6 +48,11 @@ const questionSchema = new mongoose.Schema({
       variable1: mongoose.Schema.Types.Mixed,
     },
   ],
+  constraints: [
+        {
+            type: String,
+        },
+    ],
   functionPrototype: {
     type: String,
     required: true,

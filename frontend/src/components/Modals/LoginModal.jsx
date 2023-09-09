@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import InputComp from "../utils/InputComp";
 import ButtonComp from "../utils/ButtonComp";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -18,26 +20,46 @@ const style = {
   p: 4,
 };
 
-
 const LoginModal = ({
-  handleCloseLogin,
   openLogin,
-  loginData,
-  setLoginData,
-  handleLoginSubmit,
-  emailError,
-  setEmailError,
-  emailValidationRegex,
+  setOpenLogin,
+  handleLoginSuccess,
   customInputStyle,
   customButtonStyle,
 }) => {
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [loginError, setLoginError] = useState(null);
+
+  const navigate = useNavigate();
+  
+
+    const handleCloseLogin = () => {
+    setOpenLogin(false);
+  };
+
+  const handleLogin = () => {
+  axios
+    .post("http://localhost:4000/api/v1/login", {
+      email: loginData.email,
+      password: loginData.password,
+    })
+    .then((response) => {
+      handleLoginSuccess();
+      navigate("/list")
+    })
+    .catch((error) => {
+      console.error("Login Error:", error.response.data);
+      setLoginError(error.response.data.message); 
+    });
+};
+
+
   return (
     <Modal
       open={openLogin}
       onClose={handleCloseLogin}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -47,29 +69,22 @@ const LoginModal = ({
           label="Email address"
           type="text"
           margin="normal"
-          required="true"
+          required={true}
           value={loginData.email}
           style={customInputStyle}
-          error={emailError}
           onChange={(e) => {
-            const email = e.target.value;
-            if (!emailValidationRegex.test(email) && email !== "") {
-              setEmailError("Please enter a valid Gmail address.");
-            } else {
-              setEmailError("");
-            }
-            setLoginData({ ...loginData, email }); // Update loginData email
+            setLoginData({ ...loginData, email: e.target.value });
           }}
         />
         <InputComp
           label="Password"
           type="password"
           margin="normal"
-          required="true"
+          required={true}
           value={loginData.password}
           style={customInputStyle}
           onChange={(e) =>
-            setLoginData({ ...loginData, password: e.target.value }) // Update loginData password
+            setLoginData({ ...loginData, password: e.target.value })
           }
         />
         <ButtonComp
@@ -77,9 +92,16 @@ const LoginModal = ({
           style={customButtonStyle}
           variant="contained"
           color="primary"
-          onClick={handleLoginSubmit}
+          onClick={handleLogin}
         />
+        {loginError && (
+          <Typography color="error" variant="body2">
+            {loginError}
+          </Typography>
+        )}
+        
       </Box>
+       
     </Modal>
   );
 };

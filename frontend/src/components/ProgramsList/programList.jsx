@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const columns = [
   { id: "slNo", label: "#", align: "center", minWidth: 20 },
@@ -76,10 +77,6 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const createData = (programCode, title, difficulty, status) => {
-  return { programCode, title, difficulty, status };
-};
-
 function EnhancedTableHead(props) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -126,25 +123,23 @@ const ProgramList = () => {
   const [orderBy, setOrderBy] = useState("slNo");
   const [rows, setRows] = useState([]);
 
-useEffect(() => {
-  axios
-    .get("http://localhost:4000/api/v1/questions")
-    .then((response) => {
-
-      const extractedData = response.data.data.map((item) => ({
-        programCode: item.code,
-        title: item.title,
-        difficulty: item.difficulty,
-      }));
-
-      setRows(extractedData);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}, []);
-
-
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/v1/questions")
+      .then((response) => {
+        const extractedData = response.data.data.map((item) => ({
+          questionId: item._id,
+          programCode: item.code,
+          title: item.title,
+          difficulty: item.difficulty,
+        }));
+        console.log(extractedData)
+        setRows(extractedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -222,12 +217,34 @@ useEffect(() => {
                                 : "#777777" // Todo (dark grey)
                               : "inherit",
                         }}>
-                        {column.id === "status" && row[column.id] === "1" ? (
-                          <TaskAltIcon style={{ color: "#00c44d" }} />
+                        {column.id === "title" ? (
+                          <Link
+                            to={`/editor/${row.questionId}`} 
+                            color="inherit" // Inherit the link color
+                          >
+                            {row[column.id]}
+                          </Link>
+                        ) : column.id === "status" && row[column.id] === "1" ? (
+                          <Link
+                            to={`/editor/${row.questionId}`} 
+                            color="inherit" // Inherit the link color
+                          >
+                            <TaskAltIcon style={{ color: "#00c44d" }} />
+                          </Link>
                         ) : column.id === "status" && row[column.id] === "2" ? (
-                          <CheckIcon style={{ color: "#ffc226" }} />
+                          <Link
+                            to={`/editor/${row.questionId}`} 
+                            color="inherit" // Inherit the link color
+                          >
+                            <CheckIcon style={{ color: "#ffc226" }} />
+                          </Link>
                         ) : column.id === "status" && row[column.id] === "0" ? (
-                          <HorizontalRuleIcon style={{ color: "#777777" }} />
+                          <Link
+                            to={`/editor/${row.questionId}`} 
+                            color="inherit" // Inherit the link color
+                          >
+                            <HorizontalRuleIcon style={{ color: "#777777" }} />
+                          </Link>
                         ) : (
                           row[column.id]
                         )}

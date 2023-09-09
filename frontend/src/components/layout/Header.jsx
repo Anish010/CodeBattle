@@ -1,78 +1,53 @@
 import React, { useState } from "react";
+
 import Lottie from "react-lottie";
 import logoIcon from "../../animations/logo_icon.json";
 import Button from "@mui/material/Button";
 import SignUpModal from "../Modals/SignUpModal";
 import LoginModal from "../Modals/LoginModal";
+// import Alert from '@mui/material/Alert';
+import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Header = () => {
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const [successLoginSnackOpen, setSuccessLoginSnackOpen] = useState(false);
+  const [successSignUpSnackOpen, setSuccessSignUpSnackOpen] = useState(false);
 
-  const [signUpData, setSignUpData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const handleLoginSuccess = () => {
+    setSuccessLoginSnackOpen(true);
+    setOpenLogin(false); // Close the modal
+    // resetErrors();
+  };
 
-  const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const handleSignUpSuccess = () => {
+    setSuccessSignUpSnackOpen(true);
+    setOpenSignUp(false); // Close the modal
+    // resetErrors();
+  };
 
-  const passwordValidationRegex =
-    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
-  const emailValidationRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-  //Handle close and open of Signup Modal
+    setSuccessLoginSnackOpen(false);
+    setSuccessSignUpSnackOpen(false);
+  };
+
+
+    //Handle close and successLoginSnackOpen of Signup Modal
   const handleOpenSignUp = () => setOpenSignUp(true);
-  const handleCloseSignUp = () => {
-    setOpenSignUp(false);
-    resetErrors();
-  };
 
-  //Handle close and open of Login Modal
-const handleOpenLogin = () => setOpenLogin(true);
-const handleCloseLogin = () => {
-  setOpenLogin(false);
-  resetErrors();
-};
 
-  const resetErrors = () => {
-    setPasswordError("");
-    setEmailError("");
-    setConfirmPasswordError("");
-  };
+  //Handle close and successLoginSnackOpen of Login Modal
+  const handleOpenLogin = () => setOpenLogin(true);
 
-  const handleSignUpSubmit = () => {
-    if (!emailValidationRegex.test(signUpData.email)) {
-      setEmailError("Please enter a valid Gmail address.");
-      console.log("Please enter a valid Gmail address.");
-      return;
-    }
-
-    if (!passwordValidationRegex.test(signUpData.password)) {
-      setPasswordError("Password does not meet the requirements.");
-      console.log("Password does not meet the requirements.");
-      return;
-    }
-
-    if (signUpData.password !== signUpData.confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
-      console.log("Passwords do not match.");
-      return;
-    }
-
-    // Perform form submission logic for Sign Up
-    console.log("Password meet the requirements.");
-    console.log("Sign Up Data:", signUpData);
-  };
-
-  const handleLoginSubmit = () => {
-    // Perform form submission logic for Login
-    console.log("Login Data:", loginData);
-  };
 
   const defaultOptions = {
     loop: true,
@@ -115,18 +90,8 @@ const handleCloseLogin = () => {
             </li>
             <SignUpModal
               openSignUp={openSignUp}
-              handleCloseSignUp={handleCloseSignUp}
-              handleSignUpSubmit={handleSignUpSubmit}
-              signUpData={signUpData}
-              setSignUpData={setSignUpData}
-              emailError={emailError}
-              setEmailError={setEmailError}
-              passwordError={passwordError}
-              setPasswordError={setPasswordError}
-              confirmPasswordError={confirmPasswordError}
-              setConfirmPasswordError={setConfirmPasswordError}
-              emailValidationRegex={emailValidationRegex}
-              passwordValidationRegex={passwordValidationRegex}
+              setOpenSignUp={setOpenSignUp}
+              handleSignUpSuccess={handleSignUpSuccess}
               customInputStyle={customInputStyle}
               customButtonStyle={customButtonStyle}
             />
@@ -140,17 +105,32 @@ const handleCloseLogin = () => {
             <LoginModal
               openLogin={openLogin}
               setOpenLogin={setOpenLogin}
-              handleCloseLogin={handleCloseLogin}
-              handleLoginSubmit={handleLoginSubmit}
-              loginData={loginData}
-              setLoginData={setLoginData}
-              emailError={emailError}
-              setEmailError={setEmailError}
-              emailValidationRegex={emailValidationRegex}
+              handleLoginSuccess={handleLoginSuccess}
               customInputStyle={customInputStyle}
-              customButtonStyle={customButtonStyle}/>
+              customButtonStyle={customButtonStyle}
+            />
           </ul>
         </div>
+        <Snackbar
+          open={successLoginSnackOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackClose}>
+          <Alert
+            onClose={handleSnackClose}
+            severity="success">
+            Login Successfully !
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={successSignUpSnackOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackClose}>
+          <Alert
+            onClose={handleSnackClose}
+            severity="success">
+            Register Successfully !
+          </Alert>
+        </Snackbar>
       </nav>
     </>
   );
