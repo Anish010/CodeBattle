@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Description from "./description";
-import Submission from "./submission";
-import RighContainer from "./rightContainer";
+import Description from "./LeftContainer/Description/description";
+import Submission from "./LeftContainer/Submission/submission";
+import RighContainer from "./RightContainer/rightContainer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "./editor.css";
 
 const Editor = () => {
 const [activeButton, setActiveButton] = useState("description");
@@ -31,14 +32,14 @@ const [activeButton, setActiveButton] = useState("description");
   }, [params.id]);
   
   const handleToggle = (button) => {
-    console.log(button)
+    // console.log(button)
     setActiveButton(button);
   };
 
   const renderLeftContainer = () => {
     if (activeButton === "description") {
       return <Description questionDetails={questionDetails} />
-    } else if (activeButton === "subscription") {
+    } else if (activeButton === "submission") {
       return <Submission />
     }
   }
@@ -60,18 +61,18 @@ const [activeButton, setActiveButton] = useState("description");
             </li>
             <li
               className={`subscription-button ${
-                activeButton === "subscription" ? "active" : ""
+                activeButton === "submission" ? "active" : ""
               }`}
-              onClick={() => handleToggle("subscription")}
+              onClick={() => handleToggle("submission")}
             >
-              Subscription
+              Submission
             </li>
           </ul>
         </div>
         <div className="content-container"> {renderLeftContainer()}</div>
       </div>
       <div className="right-container">
-        <h1 ><RighContainer questionDetails={questionDetails}/></h1>
+        <h1 ><RighContainer setActiveButton={setActiveButton}  questionDetails={questionDetails}/></h1>
       </div>
     </div>
   );

@@ -1,0 +1,50 @@
+.parent-container {
+  display: flex;
+  flex-direction: row;
+}
+.left-container {
+  width: 50%;
+  margin-left: 5px;
+}
+
+.editor-navbar {
+  display: flex;
+  margin-left: -5px;
+  align-items: center;
+  border-bottom: 2px solid #000000; /* Add a border at the bottom */
+}
+
+.left-container .navbar-list {
+  padding: 0;
+  margin: 0;
+}
+
+.description-button,
+.subscription-button {
+  display: inline-block;
+  color: rgb(0, 0, 0);
+  width: 150px !important; 
+  height: 40px !important;
+  cursor: pointer;
+  text-align: center;
+  line-height: 40px;
+}
+
+
+.description-button.active,
+.subscription-button.active {
+  background-color: #000000;
+  color: white;
+}
+
+.content-container {
+  flex-grow: 1; /* Make the content container grow to fill available vertical space */
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+
+.right-container {
+  width: 50%;
+}

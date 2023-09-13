@@ -1,0 +1,52 @@
+.main-body-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.text-container {
+  flex: 1;
+  padding: 20px;
+  margin-left: 40px;
+}
+
+
+.text-heading {
+  color: #590888aa;
+  font-size: 45px;
+  font-weight: bold;
+  font-family: "Borel", cursive;
+}
+
+
+.aboutUs {
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
+  color: rgb(108, 108, 108);
+  font-weight: 700;
+}
+
+
+.lottie-container {
+  max-width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+
+@media (max-width: 768px) {
+  .main-body-container {
+    flex-direction: column;
+  }
+  .text-container,
+  .lottie-container {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+}

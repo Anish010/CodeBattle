@@ -45,6 +45,7 @@ const LoginModal = ({
     })
     .then((response) => {
       handleLoginSuccess();
+      console.log(response)
       navigate("/list")
     })
     .catch((error) => {

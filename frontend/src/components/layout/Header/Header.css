@@ -1,0 +1,115 @@
+.navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.navdiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: "Acme", sans-serif;
+  margin-left: 2em;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 35px;
+  color: #b061df;
+  transition: all 0.2s ease-in-out;
+}
+
+.logo-icon {
+  margin-left: -10px;
+  display: inline-block;
+}
+
+.logo:hover {
+  transform: scale(1.2);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-links button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 40px;
+  font-size: 19px;
+  width: 7em;
+  color: #b061df;
+  height: 35px;
+  font-family: "ABeeZee", sans-serif;
+  border-radius: 8px;
+  background-color: rgba(240, 240, 240, 0.781);
+  border: 3px solid #b061df;
+  transition: all 0.1s ease-in-out;
+}
+
+.nav-links button:hover {
+  width: 11em;
+  /* transform: scale(1.1); */
+  background-color: #b061df;
+  color: white;
+}
+
+.user-icon-background {
+  background-color: #ffffff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.user-icon-background:hover {
+  transform: scale(1.2); /* Enlarge the container on hover */
+  background-color: #b061df; /* Change background color on hover */
+}
+
+.user-icon-background:hover .UserIcon {
+  color: white; /* Change font color to white on hover */
+}
+
+.UserIcon {
+  color: #b061df;
+  font-size: 23px;
+  transition: color 0.2s ease-in-out; /* Add transition for color change */
+}
+
+.my-profile-menu:hover {
+  color : #ffffff!important; 
+  background-color: #b061df !important;
+}
+
+.logout-menu:hover{
+        color : #ffffff!important; 
+  background-color: #b061df !important;
+}
+.logout-menu:hover .logout-icon {
+    color : #ffffff!important; 
+  background-color: #b061df !important;
+}
+
+
+@media (max-width: 768px) {
+  .logo {
+    margin: 0; /* Reset margin for small screens */
+    font-size: 25px;
+  }
+}
+@media (max-width: 768px) {
+  .nav-links button {
+    font-size: 17px;
+    width: 5.5em;
+    height: 35px;
+  }
+}

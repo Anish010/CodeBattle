@@ -2,6 +2,7 @@ import React from 'react'
 import Lottie from 'react-lottie';
 import manCoding from '../../animations/man_coding.json';
 import rocket from "../../animations/rocket.json"
+import "./landingPage.css";
 
 const MainBody = () => {
     const manCodingLottie = {
@@ -37,7 +38,7 @@ const MainBody = () => {
                         </span>
                     </div >
 
-                    <div className="description">
+                    <div className="aboutUs">
                         <span style={{ fontSize: "22px", color: "#6c11a1c3", fontWeight: "800" }}>Learn<br /></span>
                         Acquire new knowledge, skills, and insights in the realm of coding and algorithms <br />
                         <br /><span style={{ fontSize: "22px", color: "#6c11a1c3", fontWeight: "800" }}>Code</span><br /> Engage in hands-on practice and implementation of programming concepts, fostering a deeper understanding of coding principles and algorithms.<br />

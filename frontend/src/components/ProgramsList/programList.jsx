@@ -127,13 +127,13 @@ const ProgramList = () => {
     axios
       .get("http://localhost:4000/api/v1/questions")
       .then((response) => {
-        const extractedData = response.data.data.map((item) => ({
+        const extractedData = response.data.questions.map((item) => ({
           questionId: item._id,
           programCode: item.code,
           title: item.title,
           difficulty: item.difficulty,
         }));
-        console.log(extractedData)
+        console.log(extractedData);
         setRows(extractedData);
       })
       .catch((error) => {
@@ -219,28 +219,28 @@ const ProgramList = () => {
                         }}>
                         {column.id === "title" ? (
                           <Link
-                            to={`/editor/${row.questionId}`} 
+                            to={`/editor/${row.questionId}`}
                             color="inherit" // Inherit the link color
                           >
                             {row[column.id]}
                           </Link>
                         ) : column.id === "status" && row[column.id] === "1" ? (
                           <Link
-                            to={`/editor/${row.questionId}`} 
+                            to={`/editor/${row.questionId}`}
                             color="inherit" // Inherit the link color
                           >
                             <TaskAltIcon style={{ color: "#00c44d" }} />
                           </Link>
                         ) : column.id === "status" && row[column.id] === "2" ? (
                           <Link
-                            to={`/editor/${row.questionId}`} 
+                            to={`/editor/${row.questionId}`}
                             color="inherit" // Inherit the link color
                           >
                             <CheckIcon style={{ color: "#ffc226" }} />
                           </Link>
                         ) : column.id === "status" && row[column.id] === "0" ? (
                           <Link
-                            to={`/editor/${row.questionId}`} 
+                            to={`/editor/${row.questionId}`}
                             color="inherit" // Inherit the link color
                           >
                             <HorizontalRuleIcon style={{ color: "#777777" }} />
