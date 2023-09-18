@@ -1,7 +1,12 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
+
 .parent-container {
   display: flex;
   flex-direction: row;
 }
+
+
 .left-container {
   width: 50%;
   margin-left: 5px;
@@ -12,6 +17,7 @@
   margin-left: -5px;
   align-items: center;
   border-bottom: 2px solid #000000; /* Add a border at the bottom */
+  font-family: 'Montserrat', sans-serif;
 }
 
 .left-container .navbar-list {

@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Montserrat:wght@100&family=PT+Sans+Narrow&display=swap");
+
+.tab-container {
+  height: 40px;
+  display: flex;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+}
+
+.accepted-tab,
+.wrong-tab {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.accepted-tab {
+  margin-left: 3px;
+  color: green;
+}
+
+.wrong-tab {
+  margin-left: 6px;
+  color: red;
+}
+
+.tab-text {
+  margin-left: 8px;
+}
+

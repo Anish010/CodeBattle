@@ -14,9 +14,11 @@ app.use(cors());
 // Import all routes
 const user = require("./routes/userRoute");
 const question = require("./routes/questionRoute");
+const submission = require("./routes/submissionRoute");
 
 app.use("/api/v1", user)
 app.use("/api/v1",question)
+app.use("/api/v1",submission)
 
 // Middleware for error
 app.use(errorMiddleware);

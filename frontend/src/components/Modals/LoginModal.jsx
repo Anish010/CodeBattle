@@ -6,6 +6,8 @@ import InputComp from "../utils/InputComp";
 import ButtonComp from "../utils/ButtonComp";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../../reducers/userReducer";
 
 const style = {
   position: "absolute",
@@ -31,7 +33,7 @@ const LoginModal = ({
   const [loginError, setLoginError] = useState(null);
 
   const navigate = useNavigate();
-  
+  const dispatch = useDispatch();
 
     const handleCloseLogin = () => {
     setOpenLogin(false);
@@ -44,8 +46,14 @@ const LoginModal = ({
       password: loginData.password,
     })
     .then((response) => {
+      console.log(response.data.user)
       handleLoginSuccess();
-      console.log(response)
+      const data = {
+        username : response.data.user.username,
+      email: response.data.user.email,
+      id: response.data.user._id
+    };
+      dispatch(setUser(data))
       navigate("/list")
     })
     .catch((error) => {

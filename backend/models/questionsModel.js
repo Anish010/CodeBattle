@@ -42,12 +42,7 @@ const questionSchema = new mongoose.Schema({
       },
     },
   ],
-  testCases: [
-    {
-      arrayInput: mongoose.Schema.Types.Mixed,
-      variable1: mongoose.Schema.Types.Mixed,
-    },
-  ],
+  testCases: [{}],
   constraints: [
         {
             type: String,

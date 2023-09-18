@@ -19,7 +19,7 @@ const Header = () => {
   const [successLoginSnackOpen, setSuccessLoginSnackOpen] = useState(false);
   const [successSignUpSnackOpen, setSuccessSignUpSnackOpen] = useState(false);
   const location = useLocation();
-  console.log(location, "location");
+
 
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {

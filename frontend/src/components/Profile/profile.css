@@ -1,0 +1,6 @@
+/* Add custom CSS to adjust card width and height */
+.custom-card {
+  width: 100%; 
+  max-height: 100px; 
+  overflow-y: auto; 
+}

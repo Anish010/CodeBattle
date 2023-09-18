@@ -40,16 +40,24 @@ const handleLogout = async () => {
     // Handle any errors that occur during the logout process.
     console.error('Error during logout:', error);
   }
-};
+  };
+  
+  const handleProlemsBtn = () => {
+    navigate("/list")
+  }
+
+  const handleDiscussionBtn = () => {
+    navigate("/discussion")
+  }
 
   return (
     <Fragment>
       <ul className="nav-links">
         <li>
-          <Button style={{ textTransform: "none" }}>Problems</Button>
+          <Button style={{ textTransform: "none" }} onClick={handleProlemsBtn}>Problems</Button>
         </li>
         <li>
-          <Button style={{ textTransform: "none" }}>Discussion</Button>
+          <Button style={{ textTransform: "none" }} onClick={handleDiscussionBtn}>Discussion</Button>
         </li>
       </ul>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
