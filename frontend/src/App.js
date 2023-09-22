@@ -6,7 +6,8 @@ import Header from "./components/layout/Header/Header";
 import ProblemList from "./components/ProgramsList/programList";
 import Editor from "./components/Editor/editor";
 import ProfilePage from "./components/Profile/profile";
-
+import ShowCode from "./components/ShowCode/showCode";
+import Discussion from "./components/Discussion/discussion";
 function App() {
   return (
     <>
@@ -17,7 +18,9 @@ function App() {
          <Route path="/" element={ <LandingPage />} />
           <Route path="/list" element={ <ProblemList />} />
           <Route path="/editor/:id" element={ <Editor />} />
-          <Route path="/profile" element={ <ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/submittedCode/:id" element={<ShowCode />} />
+          <Route path="/discussion" element={<Discussion />} />
         </Routes>
       </BrowserRouter>
       <Footer />

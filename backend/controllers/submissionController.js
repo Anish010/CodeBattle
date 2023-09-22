@@ -6,30 +6,27 @@ const User = require("../models/userModel");
 const Submission = require("../models/submissionModel");
 
 exports.submitQuestion = catchAsyncError(async (req, res, next) => {
-  const { userId, questionId, actualCode } = req.body;
+  const { userId, questionId, userCode } = req.body;
   const question = await Question.findById(questionId);
 
   const testCases = question.testCases;
 
   //evaluation actual function
-var actualTestCasesResults = [];
+  var actualTestCasesResults = [];
 
-const actualFunctionRes = new Function(question.actualFunction);
-console.log(question.actualFunction);
-console.log(actualFunctionRes);
-const actualFunctionRes1 = actualFunctionRes();
+  const actualFunctionRes = new Function(question.actualCode);
+  const actualFunctionRes1 = actualFunctionRes();
 
-for (let i = 0; i < testCases.length; i++) {
-  actualTestCasesResults[i] = actualFunctionRes1(
-    testCases[i].arrayInput,
-    testCases[i].variable1
-  );
-  console.log('Function Result:', actualTestCasesResults[i]);
-}
+  for (let i = 0; i < testCases.length; i++) {
+    actualTestCasesResults[i] = actualFunctionRes1(
+      testCases[i].arrayInput,
+      testCases[i].variable1
+    );
+  }
 
   //evaluating user code
-  const userFunctionRes = new Function(actualCode);
-  const userFuctionRes1 = userFunctionRes;
+  const userFunctionRes = new Function(userCode);
+  const userFuctionRes1 = userFunctionRes();
   var userTestCasesResults = [];
 
   for (let i = 0; i < testCases.length; i++) {
@@ -42,24 +39,29 @@ for (let i = 0; i < testCases.length; i++) {
   //Comparing both user code and actual code
   let flag = -1;
   for (let i = 0; i < testCases.length; i++) {
-    if (actualTestCasesResults[i] != userTestCasesResults[i]) {
+    if (actualTestCasesResults[i] !== userTestCasesResults[i]) {
       flag = i;
     }
   }
-  if (flag == -1) {
-    await question.updateOne({
-      $push: { attemptedBy: userId },
-    });
+  if (flag !== -1) {
+    if (question && !question.attemptedBy.includes(userId))
+      await question.updateOne({
+        $push: { attemptedBy: userId },
+      });
 
-    await User.updateOne({
-      $push: { questionAttempted: questionId },
-    });
+    const user = await User.findById(userId);
+    if (user && !user.questionAttempted.includes(questionId)) {
+      await user.updateOne({
+        $push: { questionAttempted: questionId },
+      });
+    }
 
     try {
       const newSubmission = new Submission({
         userId: userId,
         questionId: questionId,
-        submission: "Wrong Answer",
+        status: "Wrong Answer",
+        userCode : userCode
       });
 
       const savedSubmission = await newSubmission.save();
@@ -71,6 +73,7 @@ for (let i = 0; i < testCases.length; i++) {
     }
     res.status(201).json({
       success: true,
+      message: "Wrong Answer",
       data: userTestCasesResults,
     });
   } else {
@@ -86,7 +89,8 @@ for (let i = 0; i < testCases.length; i++) {
       const newSubmission = new Submission({
         userId: userId,
         questionId: questionId,
-        submission: "Accepted",
+        status: "Accepted",
+        userCode : userCode
       });
 
       const savedSubmission = await newSubmission.save();
@@ -114,7 +118,7 @@ exports.getAllSubmissions = catchAsyncError(async (req, res, next) => {
 });
 exports.getSubmissionById = catchAsyncError(async (req, res, next) => {
   const { userId, questionId } = req.query;
-  console.log(questionId, userId);
+
   // Use the userId and questionId to filter submissions
   const submissions = await Submission.find({ userId, questionId });
 
@@ -156,3 +160,18 @@ exports.deleteAllSubmissions = async (req, res) => {
     });
   }
 };
+
+
+//get Submission by submissionId
+exports.getSubmissionBySubId = catchAsyncError(async (req, res, next) => {
+  const submission = await Submission.findById(req.params.id);
+
+  if (!submission) {
+    return next(new ErrorHandler("Submission not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: submission,
+  });
+});

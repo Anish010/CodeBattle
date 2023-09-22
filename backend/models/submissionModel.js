@@ -10,8 +10,11 @@ const submissionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Question",
   },
-  submission: {
+  status: {
     type: String,
+  },
+  userCode: {
+    type : String,
   },
   timestamp: {
     type: Date,

@@ -6,10 +6,11 @@ import SubmissionTabs from "./submissionTab";
 import Lottie from 'react-lottie';
 import "./submission.css";
 import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import Stack from "@mui/material/Stack";
 import LoadingSkeleton from "../../../utils/LoadingSkeleton";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setSubmissions } from "../../../../reducers/submissionReducer";
 
 const Submission = () => {
   const NoDataLottie = {
@@ -25,27 +26,37 @@ const Submission = () => {
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const userId = useSelector((state) => state.user.id);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const requestData = {
       questionId: params.id,
       userId: userId,
     };
-    console.log(requestData);
     axios
       .get(`http://localhost:4000/api/v1/submission/`, {
         params: requestData,
       })
       .then((response) => {
-        console.log(response.data);
-        setSubmissionData(response.data.data);
+        setSubmissionData(response.data.data.reverse());
+        console.log(submissionData);
+        // const submissionsData = response.data.data.map(
+        // (submission) => ({
+        //   status: submission.status,
+        //   userCode: submission.userCode,
+        // })
+        // );
+
         setLoading(false);
+        
+        // dispatch(setSubmissions(submissionsData));
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
         setLoading(false);
       });
   }, []);
+
 
   const style = {
     width: "100%",

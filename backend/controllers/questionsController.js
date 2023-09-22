@@ -18,7 +18,7 @@ exports.createQuestion = catchAsyncError(async (req, res, next) => {
     exampleTestCases,
     testCases,
     functionPrototype,
-    actualFunction,
+    actualCode,
   } = req.body;
 
   try {
@@ -33,7 +33,7 @@ exports.createQuestion = catchAsyncError(async (req, res, next) => {
       constraints,
       testCases,
       functionPrototype,
-      actualFunction,
+      actualCode,
     });
 
     // Save the question to the database

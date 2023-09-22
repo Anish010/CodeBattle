@@ -2,9 +2,10 @@ import React, { Fragment } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { ImCross } from "react-icons/im";
 import { Checkmark } from 'react-checkmark'
-
+import { useNavigate } from "react-router-dom";
 const SubmissionTabs = ({ tabData }) => {
 
+  const navigate = useNavigate();
   const formatTimestamp = (timestamp) => {
   const currentTime = new Date();
   const timestampDate = new Date(timestamp);
@@ -39,13 +40,16 @@ const SubmissionTabs = ({ tabData }) => {
     hour: '2-digit',
     minute: '2-digit',
   });
-};
-
+  };
+  
+  const handleSubmissionTab = () => {
+    navigate(`/submittedCode/${tabData._id}`)
+  } 
 
   return (
     <Fragment>
       <div className="tab-container">
-        <div className="tab">
+        <div className="tab" onClick={handleSubmissionTab}>
           <div
             className={
               tabData.submission === "Accepted" ? "accepted-tab" : "wrong-tab"

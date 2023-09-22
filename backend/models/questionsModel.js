@@ -52,7 +52,7 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  actualFunction: {
+  actualCode: {
     type: String,
     required: true,
   },
