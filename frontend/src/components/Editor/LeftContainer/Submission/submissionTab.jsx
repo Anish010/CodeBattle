@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { BsCheckCircleFill } from "react-icons/bs";
 import { ImCross } from "react-icons/im";
 import { Checkmark } from 'react-checkmark'
 import { useNavigate } from "react-router-dom";
@@ -52,15 +51,15 @@ const SubmissionTabs = ({ tabData }) => {
         <div className="tab" onClick={handleSubmissionTab}>
           <div
             className={
-              tabData.submission === "Accepted" ? "accepted-tab" : "wrong-tab"
+              tabData.status === "Accepted" ? "accepted-tab" : "wrong-tab"
             }>
-            {tabData.submission === "Accepted" ? (
+            {tabData.status === "Accepted" ? (
               <Checkmark size='medium' />
             ) : (
                 <ImCross sx={{fontSize : "24px"}} />
             )}
             <span className="tab-text">
-              {tabData.submission === "Accepted" ? "Accepted" : "Wrong Answer"}
+              {tabData.status === "Accepted" ? "Accepted" : "Wrong Answer"}
             </span>
           </div>
           <span className="date-section" style={{ marginLeft: "auto" }}>

@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Description from "./LeftContainer/Description/description";
 import Submission from "./LeftContainer/Submission/submission";
-import RighContainer from "./RightContainer/rightContainer";
+import RightContainer from "./RightContainer/rightContainer";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import "./editor.css";
 
 const Editor = () => {
 const [activeButton, setActiveButton] = useState("description");
   const params = useParams();
+  const userId = useSelector((state) => state.user.id);
+  const [data, setData] = useState({});
+
+useEffect(() => {
+  const questionId = params.id;
+
+  setData({
+    userId: userId,
+    questionId: questionId,
+  });
+}, [params.id, userId]); 
 
   const [questionDetails, setQuestionDetails] = useState({
     title: "",
@@ -30,6 +42,7 @@ const [activeButton, setActiveButton] = useState("description");
         console.error("Error fetching data:", error);
       });
   }, [params.id]);
+
   
   const handleToggle = (button) => {
     // console.log(button)
@@ -40,7 +53,7 @@ const [activeButton, setActiveButton] = useState("description");
     if (activeButton === "description") {
       return <Description questionDetails={questionDetails} />
     } else if (activeButton === "submission") {
-      return <Submission />
+      return <Submission requestData={data} />
     }
   }
 
@@ -72,7 +85,7 @@ const [activeButton, setActiveButton] = useState("description");
         <div className="content-container"> {renderLeftContainer()}</div>
       </div>
       <div className="right-container">
-        <h1 ><RighContainer setActiveButton={setActiveButton}  questionDetails={questionDetails}/></h1>
+        <h1 ><RightContainer setActiveButton={setActiveButton} questionDetails={questionDetails} requestData={data} /></h1>
       </div>
     </div>
   );

@@ -10,13 +10,17 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import { FaUserAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import {useDispatch } from "react-redux";
+import { logout } from "../../../reducers/userReducer";
 import axios from 'axios';
 
 const AfterAuth = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    
-    const navigate = useNavigate();
+  const open = Boolean(anchorEl);
+  
+
+  const dispatch = useDispatch();  
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,14 +31,15 @@ const AfterAuth = () => {
   };
 
   const openProfile = () => {
-    navigate("/profile")
+    navigate("#")
   };
 
 const handleLogout = async () => {
   try {
     const response = await axios.post('http://localhost:4000/api/v1/logout');
     // You can handle the response or any necessary actions after logout here.
-      console.log('Logged out successfully', response.data);
+    console.log('Logged out successfully', response.data);
+    dispatch(logout())
       navigate("/")
   } catch (error) {
     // Handle any errors that occur during the logout process.

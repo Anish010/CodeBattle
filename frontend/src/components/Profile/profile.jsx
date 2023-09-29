@@ -45,7 +45,7 @@ export default function ProfilePage() {
   return (
     <Container className={classes.root}>
       <Grid container spacing={3}>
-        <Grid item lg={4}>
+        {/* <Grid item lg={4}>
           <Card className={classes.card} component={Paper}>
             <CardMedia
               className={classes.media}
@@ -105,7 +105,7 @@ export default function ProfilePage() {
               </List>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid> */}
 
         <Grid item lg={8}>
           <Card className={classes.card} component={Paper}>
@@ -120,6 +120,14 @@ export default function ProfilePage() {
                   <Typography variant="h6">Full Name</Typography>
                   <Typography variant="body2" color="textSecondary">
                     Johnatan Smith
+                  </Typography>
+                </div>
+              </div>
+              <div>
+                <div style={{ flex: 1 }}>
+                  <Typography variant="h6">UserName</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    example@example.com
                   </Typography>
                 </div>
               </div>

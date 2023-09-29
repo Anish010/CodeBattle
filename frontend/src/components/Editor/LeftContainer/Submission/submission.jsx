@@ -3,16 +3,13 @@ import List from "@mui/material/List";
 import NoData from "../../../../animations/NoData.json";
 import Divider from "@mui/material/Divider";
 import SubmissionTabs from "./submissionTab";
-import Lottie from 'react-lottie';
+import Lottie from "react-lottie";
 import "./submission.css";
-import { useParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import LoadingSkeleton from "../../../utils/LoadingSkeleton";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { setSubmissions } from "../../../../reducers/submissionReducer";
 
-const Submission = () => {
+const Submission = ({ requestData }) => {
   const NoDataLottie = {
     loop: true,
     autoplay: true,
@@ -24,40 +21,27 @@ const Submission = () => {
 
   const [submissionData, setSubmissionData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const params = useParams();
-  const userId = useSelector((state) => state.user.id);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const requestData = {
-      questionId: params.id,
-      userId: userId,
-    };
-    axios
-      .get(`http://localhost:4000/api/v1/submission/`, {
-        params: requestData,
-      })
-      .then((response) => {
-        setSubmissionData(response.data.data.reverse());
-        console.log(submissionData);
-        // const submissionsData = response.data.data.map(
-        // (submission) => ({
-        //   status: submission.status,
-        //   userCode: submission.userCode,
-        // })
-        // );
+  
+useEffect(() => {
+  axios
+    .post(`http://localhost:4000/api/v1/submission`, requestData, {
+      headers: {
+        "Content-Type": "application/json", // Set the content type to JSON
+      },
+    })
+    .then((response) => {
+      setSubmissionData(response.data.data.reverse());
+      setLoading(false);
 
-        setLoading(false);
-        
-        // dispatch(setSubmissions(submissionsData));
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
-
-
+      // dispatch(setSubmissions(submissionsData));
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+}, [requestData]);
+  
   const style = {
     width: "100%",
     bgcolor: "background.paper",
@@ -76,7 +60,7 @@ const Submission = () => {
         />
       ) : (
         <List sx={style} component="nav" aria-label="mailbox folders">
-          {submissionData.map((tab, index) => (
+          {submissionData.map((tab) => (
             <Fragment key={tab._id}>
               <Stack spacing={1}>
                 <SubmissionTabs tabData={tab} />
@@ -84,6 +68,7 @@ const Submission = () => {
               </Stack>
             </Fragment>
           ))}
+              
         </List>
       )}
     </Fragment>

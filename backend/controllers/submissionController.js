@@ -8,7 +8,7 @@ const Submission = require("../models/submissionModel");
 exports.submitQuestion = catchAsyncError(async (req, res, next) => {
   const { userId, questionId, userCode } = req.body;
   const question = await Question.findById(questionId);
-
+  console.log(userId, questionId, userCode)
   const testCases = question.testCases;
 
   //evaluation actual function
@@ -41,6 +41,7 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
   for (let i = 0; i < testCases.length; i++) {
     if (actualTestCasesResults[i] !== userTestCasesResults[i]) {
       flag = i;
+      break;
     }
   }
   if (flag !== -1) {
@@ -61,7 +62,7 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
         userId: userId,
         questionId: questionId,
         status: "Wrong Answer",
-        userCode : userCode
+        userCode: userCode,
       });
 
       const savedSubmission = await newSubmission.save();
@@ -90,7 +91,7 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
         userId: userId,
         questionId: questionId,
         status: "Accepted",
-        userCode : userCode
+        userCode: userCode,
       });
 
       const savedSubmission = await newSubmission.save();
@@ -117,19 +118,26 @@ exports.getAllSubmissions = catchAsyncError(async (req, res, next) => {
   });
 });
 exports.getSubmissionById = catchAsyncError(async (req, res, next) => {
-  const { userId, questionId } = req.query;
-
+  const requestData = req.body;
+  const { userId, questionId } = requestData;
   // Use the userId and questionId to filter submissions
-  const submissions = await Submission.find({ userId, questionId });
+  try {
+    const submissions = await Submission.find({ userId, questionId });
 
-  if (!submissions) {
-    return next(new ErrorHandler("Submissions not found", 404));
+    if (!submissions) {
+      return next(new ErrorHandler("Submissions not found", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: submissions,
+    });
+  } catch (error) {
+    // Log the error for debugging
+    console.error(error);
+    // Handle the error and send an appropriate response
+    return next(new ErrorHandler("Error fetching submissions", 500));
   }
-
-  res.status(200).json({
-    success: true,
-    data: submissions,
-  });
 });
 
 exports.deleteAllSubmissions = async (req, res) => {
@@ -160,7 +168,6 @@ exports.deleteAllSubmissions = async (req, res) => {
     });
   }
 };
-
 
 //get Submission by submissionId
 exports.getSubmissionBySubId = catchAsyncError(async (req, res, next) => {
