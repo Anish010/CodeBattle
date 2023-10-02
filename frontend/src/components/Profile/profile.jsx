@@ -5,16 +5,8 @@ import {
   Paper,
   Card,
   CardContent,
-  CardMedia,
-  Button,
   Typography,
-  Link,
-  List,
-  ListItem,
-  ListItemText,
   LinearProgress,
-  Divider,
-  Box,
   makeStyles,
 } from "@material-ui/core";
 

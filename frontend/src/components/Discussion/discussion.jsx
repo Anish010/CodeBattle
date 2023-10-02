@@ -4,7 +4,7 @@ import ComingSoon from "../../animations/ComingSoon.json";
 import UnderDev from "../../animations/UnderDev.json";
 import "./discussion.css"
 
-const discussion = () => {
+const Discussion = () => {
   const ComingSoonLottie = {
     loop: true,
     autoplay: true,
@@ -41,4 +41,4 @@ const discussion = () => {
   );
 };
 
-export default discussion;
+export default Discussion;

@@ -10,7 +10,8 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import { FaUserAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import {useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { BASE_URL } from "../../../services/rootServices";
 import { logout } from "../../../reducers/userReducer";
 import axios from 'axios';
 
@@ -36,7 +37,7 @@ const AfterAuth = () => {
 
 const handleLogout = async () => {
   try {
-    const response = await axios.post('http://localhost:4000/api/v1/logout');
+    const response = await axios.post(`${BASE_URL}/logout`);
     // You can handle the response or any necessary actions after logout here.
     console.log('Logged out successfully', response.data);
     dispatch(logout())

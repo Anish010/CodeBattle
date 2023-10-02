@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 import axios from "axios";
+import { BASE_URL } from "../../services/rootServices";
 import { Link } from "react-router-dom";
 
 const columns = [
@@ -125,7 +126,7 @@ const ProgramList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/v1/questions")
+      .get(`${BASE_URL}/questions`)
       .then((response) => {
         const extractedData = response.data.questions.map((item) => ({
           questionId: item._id,

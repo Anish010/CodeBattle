@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./reducers/userReducer";
 import submissionReducer from "./reducers/submissionReducer";
+import loadingReducer from "./reducers/loadingReducer";
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 // import { legacy_createStore as createStore } from 'redux';
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const combineReducer = combineReducers({
   user: userReducer,
-  submissions: submissionReducer
+  submissions: submissionReducer,
+  loading : loadingReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, combineReducer);

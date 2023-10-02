@@ -6,8 +6,9 @@ import InputComp from "../utils/InputComp";
 import ButtonComp from "../utils/ButtonComp";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../../reducers/userReducer";
+import { BASE_URL } from "../../services/rootServices";
 
 const style = {
   position: "absolute",
@@ -41,7 +42,7 @@ const LoginModal = ({
 
   const handleLogin = () => {
   axios
-    .post("http://localhost:4000/api/v1/login", {
+    .post(`${BASE_URL}/login`, {
       email: loginData.email,
       password: loginData.password,
     })

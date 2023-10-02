@@ -2,14 +2,18 @@ import React, { useState, useEffect, Fragment } from "react";
 import List from "@mui/material/List";
 import NoData from "../../../../animations/NoData.json";
 import Divider from "@mui/material/Divider";
-import SubmissionTabs from "./submissionTab";
+import SubmissionTabs from "./SubmissionTab";
 import Lottie from "react-lottie";
 import "./submission.css";
 import Stack from "@mui/material/Stack";
 import LoadingSkeleton from "../../../utils/LoadingSkeleton";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setLoading } from "../../../../reducers/loadingReducer"
 import axios from "axios";
+import { BASE_URL } from "../../../../services/rootServices";
 
-const Submission = ({ requestData }) => {
+const Submission = ({ requestData, submissionKey }) => {
   const NoDataLottie = {
     loop: true,
     autoplay: true,
@@ -20,36 +24,37 @@ const Submission = ({ requestData }) => {
   };
 
   const [submissionData, setSubmissionData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const submissionLoading = useSelector((state) => state.loading.status);
+  const dispatch = useDispatch();
 
-  
-useEffect(() => {
-  axios
-    .post(`http://localhost:4000/api/v1/submission`, requestData, {
-      headers: {
-        "Content-Type": "application/json", // Set the content type to JSON
-      },
-    })
-    .then((response) => {
-      setSubmissionData(response.data.data.reverse());
-      setLoading(false);
+  useEffect(() => {
+    dispatch(setLoading(true));
+    axios
+      .post(`${BASE_URL}/submission`, requestData, {
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+        },
+      })
+      .then((response) => {
+        setSubmissionData(response.data.data.reverse());
+        dispatch(setLoading(false));
 
-      // dispatch(setSubmissions(submissionsData));
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      setLoading(false);
-    });
-}, [requestData]);
-  
+        // dispatch(setSubmissions(submissionsData));
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        dispatch(setLoading(false));
+      });
+  }, [requestData, submissionKey]);
+
   const style = {
     width: "100%",
     bgcolor: "background.paper",
   };
 
   return (
-    <Fragment>
-      {loading ? ( // Conditional rendering for the loader
+    <Fragment key={submissionKey}>
+      {submissionLoading ? ( // Conditional rendering for the loader
         <LoadingSkeleton />
       ) : submissionData.length === 0 ? ( // Check if submissionData is empty
         <Lottie
@@ -68,7 +73,6 @@ useEffect(() => {
               </Stack>
             </Fragment>
           ))}
-              
         </List>
       )}
     </Fragment>

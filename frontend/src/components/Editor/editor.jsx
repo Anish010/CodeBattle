@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from "react";
-import Description from "./LeftContainer/Description/description";
-import Submission from "./LeftContainer/Submission/submission";
-import RightContainer from "./RightContainer/rightContainer";
+import Description from "./LeftContainer/Description/Description";
+import Submission from "./LeftContainer/Submission/Submission";
+import RightContainer from "./RightContainer/RightContainer";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { BASE_URL } from "../../services/rootServices";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../reducers/loadingReducer";
 import axios from "axios";
 import "./editor.css";
 
 const Editor = () => {
-const [activeButton, setActiveButton] = useState("description");
+  const [activeButton, setActiveButton] = useState("description");
   const params = useParams();
   const userId = useSelector((state) => state.user.id);
+  const dispatch = useDispatch();
   const [data, setData] = useState({});
+  const [submissionKey, setSubmissionKey] = useState(0);
 
-useEffect(() => {
-  const questionId = params.id;
+  useEffect(() => {
+    const questionId = params.id;
 
-  setData({
-    userId: userId,
-    questionId: questionId,
-  });
-}, [params.id, userId]); 
+    setData({
+      userId: userId,
+      questionId: questionId,
+    });
+  }, [params.id, userId]);
 
   const [questionDetails, setQuestionDetails] = useState({
     title: "",
@@ -30,10 +35,16 @@ useEffect(() => {
     constraints: [],
   });
 
+
+  const handleSubmissionComplete = () => {
+    // Increment the key to trigger a re-render of Submission component
+    setSubmissionKey((prevKey) => prevKey + 1);
+  };
+
   useEffect(() => {
     // Fetch question details using Axios
     axios
-      .get(`http://localhost:4000/api/v1/question/${params.id}`)
+      .get(`${BASE_URL}/question/${params.id}`)
       .then((response) => {
         // Set the question details received from the API in the state
         setQuestionDetails(response.data.data);
@@ -43,7 +54,6 @@ useEffect(() => {
       });
   }, [params.id]);
 
-  
   const handleToggle = (button) => {
     // console.log(button)
     setActiveButton(button);
@@ -51,13 +61,16 @@ useEffect(() => {
 
   const renderLeftContainer = () => {
     if (activeButton === "description") {
-      return <Description questionDetails={questionDetails} />
+      return <Description questionDetails={questionDetails} />;
     } else if (activeButton === "submission") {
-      return <Submission requestData={data} />
+      return (
+        <Submission
+          requestData={data}
+          submissionKey={submissionKey}
+        />
+      );
     }
-  }
-
-  
+  };
 
   return (
     <div className="parent-container">
@@ -68,16 +81,16 @@ useEffect(() => {
               className={`description-button ${
                 activeButton === "description" ? "active" : ""
               }`}
-              onClick={() => handleToggle("description")}
-            >
+              onClick={() => handleToggle("description")}>
               Description
             </li>
             <li
               className={`subscription-button ${
                 activeButton === "submission" ? "active" : ""
               }`}
-              onClick={() => handleToggle("submission")}
-            >
+              onClick={() => {
+                handleToggle("submission");
+              }}>
               Submission
             </li>
           </ul>
@@ -85,7 +98,14 @@ useEffect(() => {
         <div className="content-container"> {renderLeftContainer()}</div>
       </div>
       <div className="right-container">
-        <h1 ><RightContainer setActiveButton={setActiveButton} questionDetails={questionDetails} requestData={data} /></h1>
+        <h1>
+          <RightContainer
+            setActiveButton={setActiveButton}
+            questionDetails={questionDetails}
+            requestData={data}
+            onSubmissionComplete={handleSubmissionComplete}
+          />
+        </h1>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Stack, Skeleton } from "@mui/material";
+import { Stack } from "@mui/material";
 import Lottie from "react-lottie";
 import Loading from "../../animations/Loading.json";
 

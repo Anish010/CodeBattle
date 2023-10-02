@@ -6,7 +6,7 @@ import InputComp from "../utils/InputComp";
 import ButtonComp from "../utils/ButtonComp";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { BASE_URL } from "../../services/rootServices";
 const style = {
   position: "absolute",
   top: "50%",
@@ -78,7 +78,7 @@ const SignUpModal = ({
     }
 
     axios
-    .post("http://localhost:4000/api/v1/register", {
+    .post(`${BASE_URL}/register`, {
       username: signUpData.username,
       email: signUpData.email,
       password: signUpData.password

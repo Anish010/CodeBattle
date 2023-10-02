@@ -1,0 +1,10 @@
+.bottom-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.loading-icon{
+    margin-left : 8px;
+    margin-top : 3px;
+}

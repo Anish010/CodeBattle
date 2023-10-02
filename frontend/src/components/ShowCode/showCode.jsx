@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import {useParams} from "react-router-dom";
-const showCode = () => {
+import { useParams } from "react-router-dom";
+import { BASE_URL } from '../../services/rootServices';
+const ShowCode = () => {
     const params = useParams();
     const [submissionDetails, setSubmissionDetails] = useState({
         status: "",
@@ -12,7 +13,7 @@ const showCode = () => {
     useEffect(() => {
     // Fetch question details using Axios
     axios
-      .get(`http://localhost:4000/api/v1/submittedCode/${params.id}`)
+      .get(`${BASE_URL}/submittedCode/${params.id}`)
       .then((response) => {
         // Set the question details received from the API in the state
           setSubmissionDetails(response.data.data);
@@ -35,4 +36,4 @@ const showCode = () => {
   )
 }
 
-export default showCode
+export default ShowCode
