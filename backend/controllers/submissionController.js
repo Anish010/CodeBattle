@@ -44,7 +44,6 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
       );
     }
 
-
     // Evaluate actual function
     var actualTestCasesResults = [];
 
@@ -85,7 +84,7 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
         if (!existingQuestion) {
           user.questionAttempted.push({
             questionId: questionIdString,
-            attempted:true
+            attempted: true,
           });
 
           await user.save();
@@ -130,12 +129,12 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
           user.questionAttempted.push({
             questionId: questionIdString,
             attempted: true,
-            solved: true,
+            solved: true, // Set both attempted and solved to true for a new "Accepted" submission
           });
 
           await user.save();
-        } else if (existingQuestion.attempted && !existingQuestion.solved) {
-          // Update the 'solved' field to true
+        } else if (!existingQuestion.solved) {
+          // Update the 'solved' field to true for a new "Accepted" submission
           existingQuestion.solved = true;
           await user.save();
         }
