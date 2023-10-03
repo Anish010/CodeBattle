@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
 import Lottie from "react-lottie";
 import logoIcon from "../../../animations/logo_icon.json";
 import BeforeAuth from "./BeforeAuth";
 import AfterAuth from "./AfterAuth";
-// import Alert from '@mui/material/Alert';
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import useMultipleState from "../../../customHooks/useMultipleState";
 import "./Header.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -14,20 +14,24 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const Header = () => {
-  const [openSignUp, setOpenSignUp] = useState(false);
-  const [openLogin, setOpenLogin] = useState(false);
-  const [successLoginSnackOpen, setSuccessLoginSnackOpen] = useState(false);
-  const [successSignUpSnackOpen, setSuccessSignUpSnackOpen] = useState(false);
   const location = useLocation();
 
+  const initialState = {
+    openSignUp: false,
+    openLogin: false,
+    successLoginSnackOpen: false,
+    successSignUpSnackOpen: false,
+  };
+
+  const [state, setState] = useMultipleState(initialState);
 
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
-    setSuccessLoginSnackOpen(false);
-    setSuccessSignUpSnackOpen(false);
+    setState("successLoginSnackOpen", false);
+    setState("successSignUpSnackOpen", false);
   };
 
   const defaultOptions = {
@@ -51,30 +55,36 @@ const Header = () => {
           </div>{" "}
           {location.pathname === "/" ? (
             <BeforeAuth
-              setSuccessLoginSnackOpen={setSuccessLoginSnackOpen}
-              setSuccessSignUpSnackOpen={setSuccessSignUpSnackOpen}
-              setOpenLogin={setOpenLogin}
-              setOpenSignUp={setOpenSignUp}
-              openSignUp={openSignUp}
-              openLogin={openLogin}
+              setState={setState}
+              openSignUp={state.openSignUp}
+              openLogin={state.openLogin}
             />
-          ): <AfterAuth/>}
-          
+          ) : (
+            <AfterAuth/>
+          )}
         </div>
         <Snackbar
-          open={successLoginSnackOpen}
+          open={state.successLoginSnackOpen}
           autoHideDuration={4000}
           onClose={handleSnackClose}>
           <Alert onClose={handleSnackClose} severity="success">
-            Login Successfully !
+            Login Successfully!
           </Alert>
         </Snackbar>
         <Snackbar
-          open={successSignUpSnackOpen}
+          open={state.successSignUpSnackOpen}
           autoHideDuration={4000}
           onClose={handleSnackClose}>
           <Alert onClose={handleSnackClose} severity="success">
-            Register Successfully !
+            Register Successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={state.successLogoutSnackOpen} // Use successLogoutSnackOpen
+          autoHideDuration={4000}
+          onClose={handleSnackClose}>
+          <Alert onClose={handleSnackClose} severity="success">
+            Logout Successfully!
           </Alert>
         </Snackbar>
       </nav>

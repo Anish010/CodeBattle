@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter a username."],
     maxLength: [30, "Username cannot exceed 30 characters."],
-    minLength: [5, "Username should have minimum 5 characters."],
+    minLength: [5, "Username should have a minimum of 5 characters."],
   },
   email: {
     type: String,
@@ -23,14 +23,24 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please, enter the passowrd."],
-    minLength: [8, "Password should have minimum 8 characters"],
+    required: [true, "Please, enter the password."],
+    minLength: [8, "Password should have a minimum of 8 characters"],
     select: false,
   },
   questionAttempted: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Question",
+      questionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Question",
+      },
+      attempted: {
+        type: Boolean,
+        default: false,
+      },
+      solved: {
+        type: Boolean,
+        default: false, 
+      },
     },
   ],
 });

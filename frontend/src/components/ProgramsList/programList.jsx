@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { useSelector } from "react-redux";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import CheckIcon from "@mui/icons-material/Check";
@@ -15,6 +16,8 @@ import Box from "@mui/material/Box";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 import axios from "axios";
+import Lottie from "react-lottie";
+import logoIcon from "../../animations/logo_icon.json";
 import { BASE_URL } from "../../services/rootServices";
 import { Link } from "react-router-dom";
 
@@ -123,19 +126,18 @@ const ProgramList = () => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("slNo");
   const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const userId = useSelector((state) => state.user.id);
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/questions`)
+      .post(`${BASE_URL}/questions`, {
+        userId: userId, // Pass userId as a query parameter
+      })
       .then((response) => {
-        const extractedData = response.data.questions.map((item) => ({
-          questionId: item._id,
-          programCode: item.code,
-          title: item.title,
-          difficulty: item.difficulty,
-        }));
-        console.log(extractedData);
-        setRows(extractedData);
+        console.log(response.data.questions);
+        setRows(response.data.questions);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -174,108 +176,109 @@ const ProgramList = () => {
     [order, orderBy, page, rowsPerPage, dataRows]
   );
 
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: logoIcon,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ margin: "auto", width: "80%", overflow: "hidden" }}>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size="small">
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
+    <>
+      {loading ? (
+        <Lottie options={defaultOptions} height={400} width={400} />
+      ) : (
+        <Box sx={{ width: "100%" }}>
+          <Paper sx={{ margin: "auto", width: "80%", overflow: "hidden" }}>
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size="small">
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                />
+                <TableBody>
+                  {visibleRows.map((row, index) => {
+                    return (
+                      <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={row.programCode}
+                        sx={{ cursor: "pointer" }}>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{
+                              borderBottom: "1px solid #ddd",
+                              borderRight:
+                                column.id !== "status"
+                                  ? "1px solid #ddd"
+                                  : "none",
+                              color:
+                                column.id === "difficulty"
+                                  ? row[column.id] === "Easy"
+                                    ? "#00c44d"
+                                    : row[column.id] === "Medium"
+                                    ? "#ffc226"
+                                    : "red"
+                                  : "inherit",
+                            }}>
+                            {column.id === "title" ? (
+                              <Link
+                                to={`/editor/${row.questionId}`}
+                                color="inherit" // Inherit the link color
+                              >
+                                {row[column.id]}
+                              </Link>
+                            ) : column.id === "status" ? (
+                              // Conditionally render icons based on 'status' value
+                              row[column.id] === "1" ? (
+                                <TaskAltIcon style={{ color: "#00c44d" }} />
+                              ) : row[column.id] === "2" ? (
+                                <CheckIcon style={{ color: "#ffc226" }} />
+                              ) : (
+                                <HorizontalRuleIcon
+                                  style={{ color: "#777777" }}
+                                />
+                              )
+                            ) : (
+                              row[column.id]
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 53 * emptyRows,
+                      }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.programCode}
-                    sx={{ cursor: "pointer" }}>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{
-                          borderBottom: "1px solid #ddd",
-                          borderRight:
-                            column.id !== "status" ? "1px solid #ddd" : "none",
-                          color:
-                            column.id === "difficulty"
-                              ? row[column.id] === "Easy"
-                                ? "#00c44d"
-                                : row[column.id] === "Medium"
-                                ? "#ffc226"
-                                : "red"
-                              : column.id === "status"
-                              ? row[column.id] === "1"
-                                ? "#00c44d" // Solved (green)
-                                : row[column.id] === "2"
-                                ? "#ffc226" // Attempted (yellow)
-                                : "#777777" // Todo (dark grey)
-                              : "inherit",
-                        }}>
-                        {column.id === "title" ? (
-                          <Link
-                            to={`/editor/${row.questionId}`}
-                            color="inherit" // Inherit the link color
-                          >
-                            {row[column.id]}
-                          </Link>
-                        ) : column.id === "status" && row[column.id] === "1" ? (
-                          <Link
-                            to={`/editor/${row.questionId}`}
-                            color="inherit" // Inherit the link color
-                          >
-                            <TaskAltIcon style={{ color: "#00c44d" }} />
-                          </Link>
-                        ) : column.id === "status" && row[column.id] === "2" ? (
-                          <Link
-                            to={`/editor/${row.questionId}`}
-                            color="inherit" // Inherit the link color
-                          >
-                            <CheckIcon style={{ color: "#ffc226" }} />
-                          </Link>
-                        ) : column.id === "status" && row[column.id] === "0" ? (
-                          <Link
-                            to={`/editor/${row.questionId}`}
-                            color="inherit" // Inherit the link color
-                          >
-                            <HorizontalRuleIcon style={{ color: "#777777" }} />
-                          </Link>
-                        ) : (
-                          row[column.id]
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+          </Paper>
+        </Box>
+      )}
+    </>
   );
 };
 

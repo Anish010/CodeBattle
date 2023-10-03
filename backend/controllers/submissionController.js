@@ -7,16 +7,18 @@ const Submission = require("../models/submissionModel");
 
 const setSubmission = (userId, questionId, status, data) => {
   const newSubmission = new Submission({
-          userId: userId,
-          questionId: questionId,
-          status: status,
-          userCode: data,
-        });
+    userId: userId,
+    questionId: questionId,
+    status: status,
+    userCode: data,
+  });
 
   return newSubmission;
-}
+};
 exports.submitQuestion = catchAsyncError(async (req, res, next) => {
   const { userId, questionId, userCode } = req.body;
+
+  console.log();
   const question = await Question.findById(questionId);
   const testCases = question.testCases;
 
@@ -24,14 +26,13 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
     // Evaluate user code
     const userFunctionRes = new Function(userCode);
     const userFuctionRes1 = userFunctionRes();
-    
+
     // Check if the user's code contains a return statement
-    if (typeof userFuctionRes1 !== 'function') {
-      res.status(400).json({
+    if (typeof userFuctionRes1 !== "function") {
+      return res.status(400).json({
         success: false,
         message: "Something wrong in the function. It should return.",
       });
-      return;
     }
 
     var userTestCasesResults = [];
@@ -42,6 +43,7 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
         testCases[i].variable1
       );
     }
+
 
     // Evaluate actual function
     var actualTestCasesResults = [];
@@ -65,70 +67,115 @@ exports.submitQuestion = catchAsyncError(async (req, res, next) => {
       }
     }
 
+    //Wrong Answer
     if (flag !== -1) {
-      if (question && !question.attemptedBy.includes(userId))
+      if (question && !question.attemptedBy.includes(userId)) {
         await question.updateOne({
-          $push: { attemptedBy: userId },
-        });
-
-      const user = await User.findById(userId);
-      if (user && !user.questionAttempted.includes(questionId)) {
-        await user.updateOne({
-          $push: { questionAttempted: questionId },
+          $addToSet: { attemptedBy: userId },
         });
       }
 
-      try {
-        const newSubmission = setSubmission(userId, questionId, "Wrong Answer", userCode);
+      const user = await User.findById(userId);
+      if (user) {
+        const questionIdString = questionId.toString();
+        const existingQuestion = user.questionAttempted.find(
+          (qa) => qa.questionId.toString() === questionIdString
+        );
 
-        const savedSubmission = await newSubmission.save();
+        if (!existingQuestion) {
+          user.questionAttempted.push({
+            questionId: questionIdString,
+            attempted:true
+          });
+
+          await user.save();
+        }
+      }
+
+      try {
+        const newSubmission = setSubmission(
+          userId,
+          questionId,
+          "Wrong Answer",
+          userCode
+        );
+
+        await newSubmission.save();
       } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           message: "Unable to save submission",
         });
       }
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Wrong Answer",
         data: userTestCasesResults,
       });
-    } else {
+    }
+    //Accepted
+    else {
       await question.updateOne({
-        $push: { attemptedBy: userId },
+        $addToSet: { attemptedBy: userId },
       });
 
-      await User.updateOne({
-        $push: { questionAttempted: questionId },
-      });
+      const user = await User.findById(userId);
+      if (user) {
+        const questionIdString = questionId.toString();
+        const existingQuestion = user.questionAttempted.find(
+          (qa) => qa.questionId.toString() === questionIdString
+        );
 
+        if (!existingQuestion) {
+          user.questionAttempted.push({
+            questionId: questionIdString,
+            attempted: true,
+            solved: true,
+          });
+
+          await user.save();
+        } else if (existingQuestion.attempted && !existingQuestion.solved) {
+          // Update the 'solved' field to true
+          existingQuestion.solved = true;
+          await user.save();
+        }
+      }
       try {
-        const newSubmission = setSubmission(userId, questionId, "Accepted", userCode);
+        const newSubmission = setSubmission(
+          userId,
+          questionId,
+          "Accepted",
+          userCode
+        );
 
-        const savedSubmission = await newSubmission.save();
+        await newSubmission.save();
       } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           message: "Unable to save submission",
         });
       }
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Accepted",
       });
     }
   } catch (error) {
     // Handle user code error (e.g., SyntaxError)
-    const newSubmission = setSubmission(userId, questionId, "Wrong Answer", userCode);
+    const newSubmission = setSubmission(
+      userId,
+      questionId,
+      "Wrong Answer",
+      userCode
+    );
 
-        const savedSubmission = await newSubmission.save();
-    res.status(400).json({
+    await newSubmission.save();
+    return res.status(400).json({
       success: false,
       message: "Error in code: " + error.message,
     });
   }
 });
-
 
 exports.getAllSubmissions = catchAsyncError(async (req, res, next) => {
   const questions = await Submission.find({});

@@ -16,7 +16,7 @@ const RightContainer = ({
   onSubmissionComplete,
 }) => {
   const [userCode, setUserCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [flag, setFlag] = useState(null); // New state to store the 'flag'
   const [submitData, setSubmitData] = useState({
@@ -34,7 +34,7 @@ const RightContainer = ({
   }, [userCode, requestData.questionId, requestData.userId]);
 
   const handleSubmit = async () => {
-    setLoading(true);
+    setActiveButton("submission");
     setError(null); // Clear any previous errors
 
     axios
@@ -44,7 +44,7 @@ const RightContainer = ({
         },
       })
       .then((response) => {
-        setActiveButton("submission");
+        
         
         setLoading(false);
 

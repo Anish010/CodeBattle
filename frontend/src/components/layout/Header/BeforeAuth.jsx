@@ -4,30 +4,27 @@ import LoginModal from "../../Modals/LoginModal";
 import Button from "@mui/material/Button";
 
 const BeforeAuth = ({
-  setSuccessLoginSnackOpen,
-  setSuccessSignUpSnackOpen,
-  setOpenLogin,
-  setOpenSignUp,
+  setState,
   openLogin,
   openSignUp,
 }) => {
   const handleLoginSuccess = () => {
-    setSuccessLoginSnackOpen(true);
-    setOpenLogin(false); // Close the modal
+    setState("successLoginSnackOpen", true);
+    setState("openLogin", false); // Close the modal
     // resetErrors();
   };
 
   const handleSignUpSuccess = () => {
-    setSuccessSignUpSnackOpen(true);
-    setOpenSignUp(false); // Close the modal
+    setState("successSignUpSnackOpen", true);
+    setState("openSignUp", false); // Close the modal
     // resetErrors();
   };
 
   //Handle close and successLoginSnackOpen of Signup Modal
-  const handleOpenSignUp = () => setOpenSignUp(true);
+  const handleOpenSignUp = () => setState("openSignUp", true);
 
   //Handle close and successLoginSnackOpen of Login Modal
-  const handleOpenLogin = () => setOpenLogin(true);
+  const handleOpenLogin = () => setState("openLogin", true);
 
   const customInputStyle = {
     // Define your custom input style here
@@ -56,8 +53,8 @@ const BeforeAuth = ({
       </li>
 
       <SignUpModal
+        setState={setState}
         openSignUp={openSignUp}
-        setOpenSignUp={setOpenSignUp}
         handleSignUpSuccess={handleSignUpSuccess}
         customInputStyle={customInputStyle}
         customButtonStyle={customButtonStyle}
@@ -65,7 +62,7 @@ const BeforeAuth = ({
 
       <LoginModal
         openLogin={openLogin}
-        setOpenLogin={setOpenLogin}
+        setState={setState}
         handleLoginSuccess={handleLoginSuccess}
         customInputStyle={customInputStyle}
         customButtonStyle={customButtonStyle}

@@ -24,8 +24,8 @@ const style = {
 };
 
 const LoginModal = ({
+  setState,
   openLogin,
-  setOpenLogin,
   handleLoginSuccess,
   customInputStyle,
   customButtonStyle,
@@ -37,7 +37,7 @@ const LoginModal = ({
   const dispatch = useDispatch();
 
     const handleCloseLogin = () => {
-    setOpenLogin(false);
+    setState("openLogin", false);
   };
 
   const handleLogin = () => {

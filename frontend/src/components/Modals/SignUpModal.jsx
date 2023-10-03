@@ -20,15 +20,13 @@ const style = {
   p: 4,
 };
 
-
 const SignUpModal = ({
   openSignUp,
-  setOpenSignUp,
+  setState,
   handleSignUpSuccess,
   customInputStyle,
   customButtonStyle,
 }) => {
-
   const [signUpData, setSignUpData] = useState({
     username: "",
     email: "",
@@ -45,19 +43,18 @@ const SignUpModal = ({
   const passwordValidationRegex =
     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
   const emailValidationRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-  
+
   const resetErrors = () => {
     setPasswordError("");
     setEmailError("");
     setConfirmPasswordError("");
   };
 
-   const handleCloseSignUp = () => {
-    setOpenSignUp(false);
+  const handleCloseSignUp = () => {
+    setState("openSignUp", false);
     resetErrors();
   };
 
-  
   const handleSignUpSubmit = () => {
     if (!emailValidationRegex.test(signUpData.email)) {
       setEmailError("Please enter a valid Gmail address.");
@@ -78,21 +75,21 @@ const SignUpModal = ({
     }
 
     axios
-    .post(`${BASE_URL}/register`, {
-      username: signUpData.username,
-      email: signUpData.email,
-      password: signUpData.password
-    })
-    .then((response) => {
-      handleSignUpSuccess();
-      navigate("/list")
-    })
-    .catch((error) => {
-      console.error("Login Error:", error.response.data);
-      setSignUpError(error.response.data.message); 
-    });
+      .post(`${BASE_URL}/register`, {
+        username: signUpData.username,
+        email: signUpData.email,
+        password: signUpData.password,
+      })
+      .then((response) => {
+        handleSignUpSuccess();
+        navigate("/list");
+      })
+      .catch((error) => {
+        console.error("SignUp Error:", error.response.data);
+        setSignUpError(error.response.data.message);
+      });
   };
-  
+
   return (
     <Modal
       open={openSignUp}
@@ -107,18 +104,19 @@ const SignUpModal = ({
           label="Username"
           type="text"
           margin="normal"
-          required="true"
+          required={true}
           style={customInputStyle}
           value={signUpData.username}
           onChange={(e) =>
             setSignUpData({ ...signUpData, username: e.target.value })
           }
         />
+
         <InputComp
           label="Email address"
           type="email"
           margin="normal"
-          required="true"
+          required={true}
           style={customInputStyle}
           error={emailError}
           onChange={(e) => {
@@ -135,7 +133,7 @@ const SignUpModal = ({
           label="Password"
           type="password"
           margin="normal"
-          required="true"
+          required={true}
           style={customInputStyle}
           error={passwordError}
           onChange={(e) => {
@@ -154,7 +152,7 @@ const SignUpModal = ({
           label="Confirm Password"
           type="password"
           margin="normal"
-          required="true"
+          required={true}
           style={customInputStyle}
           error={confirmPasswordError}
           onChange={(e) => {

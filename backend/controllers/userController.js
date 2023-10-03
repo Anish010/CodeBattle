@@ -19,13 +19,24 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
 exports.registerUser = catchAsyncError(async (req, res, next) => {
   const { username, email, password } = req.body;
 
+  // Check if the user already exists by email
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    return next(new ErrorHandler("User with this email already exists", 400));
+  }
+
+  // Initialize questionAttempted as an empty array
   const user = await User.create({
     username,
     email,
     password,
+    questionAttempted: [], // Initialize the field here
   });
+
   sendToken(user, 201, res);
 });
+
 
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;

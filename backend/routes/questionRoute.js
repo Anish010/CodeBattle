@@ -6,7 +6,7 @@ const { createQuestion, getAllQuestions, getQuestionById } = require("../control
 const { submitQuestion } = require("../controllers/submissionController");
 
 router.route("/createQuestion").post( createQuestion);
-router.route("/questions").get( getAllQuestions);
+router.route("/questions").post(getAllQuestions);
 router.route("/question/:id").get( getQuestionById);
 
 module.exports = router;
