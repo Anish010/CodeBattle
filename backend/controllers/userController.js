@@ -14,6 +14,33 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.getUserSubmissionCounts = catchAsyncError(async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Count the number of questions solved by filtering the 'questionAttempted' array
+    const solvedCount = user.questionAttempted.filter((qa) => qa.solved).length;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        solvedCount,
+      },
+    });
+  } catch (error) {
+    console.error("Error getting user submission counts:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+
 //Register an user
 
 exports.registerUser = catchAsyncError(async (req, res, next) => {
@@ -63,16 +90,16 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
 });
 
 //Logout User
-exports.logoutUser = catchAsyncError(async (req, res, next) => {
-  res.cookie("token", null, {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-  });
-  res.status(200).json({
-    success: true,
-    message: "Logout Successfully",
-  });
-});
+// exports.logoutUser = catchAsyncError(async (req, res, next) => {
+//   res.cookie("token", null, {
+//     expires: new Date(Date.now()),
+//     httpOnly: true,
+//   });
+//   res.status(200).json({
+//     success: true,
+//     message: "Logout Successfully",
+//   });
+// });
 
 //Get Accepted Submission by a user
 exports.getAcceptedQuestionCount = catchAsyncError(async (req, res) => {

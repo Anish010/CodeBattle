@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
+import { useNavigate } from "react-router-dom";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
@@ -20,6 +21,9 @@ import Lottie from "react-lottie";
 import logoIcon from "../../animations/logo_icon.json";
 import { BASE_URL } from "../../services/rootServices";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+import { resetUser } from "../../reducers/userReducer"
+import { useDispatch } from "react-redux";
 
 const columns = [
   { id: "slNo", label: "#", align: "center", minWidth: 20 },
@@ -128,21 +132,43 @@ const ProgramList = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = useSelector((state) => state.user.id);
+  const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+  
   useEffect(() => {
-    axios
-      .post(`${BASE_URL}/questions`, {
-        userId: userId, // Pass userId as a query parameter
-      })
-      .then((response) => {
-        console.log(response.data.questions);
-        setRows(response.data.questions);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+  const authToken = Cookies.get("authToken");
+  if (!authToken) {
+    navigate("/");
+  }
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+  };
+
+  axios
+    .post(`${BASE_URL}/questions`, { userId }, config)
+    .then((response) => {
+      console.log(response.data.questions);
+      setRows(response.data.questions);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized, clear authToken and redirect to login
+        localStorage.clear();
+        Cookies.remove("authToken");
+        dispatch(resetUser());
+        navigate("/");
+      } else {
+        // Handle other errors as needed
+      }
+    });
+}, [userId, dispatch, navigate]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";

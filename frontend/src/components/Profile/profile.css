@@ -4,3 +4,6 @@
   max-height: 100px; 
   overflow-y: auto; 
 }
+.profile_grid_container{
+  background-color: rgba(228, 228, 228, 0.947);
+}

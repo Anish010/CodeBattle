@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../reducers/userReducer";
+import Cookies from "js-cookie";
 import { BASE_URL } from "../../services/rootServices";
 
 const style = {
@@ -27,6 +28,7 @@ const LoginModal = ({
   setState,
   openLogin,
   handleLoginSuccess,
+  handleLoginFailure,
   customInputStyle,
   customButtonStyle,
 }) => {
@@ -55,9 +57,14 @@ const LoginModal = ({
       id: response.data.user._id
     };
       dispatch(setUser(data))
+
+      // Store the token in cookies
+      Cookies.set("authToken", response.data.token, { expires: 7 }); // Set the expiration as needed
+      
       navigate("/list")
     })
     .catch((error) => {
+      handleLoginFailure();
       console.error("Login Error:", error.response.data);
       setLoginError(error.response.data.message); 
     });

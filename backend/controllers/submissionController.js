@@ -18,7 +18,7 @@ const setSubmission = (userId, questionId, status, data) => {
 exports.submitQuestion = catchAsyncError(async (req, res, next) => {
   const { userId, questionId, userCode } = req.body;
 
-  console.log();
+  console.log(userId, questionId, userCode);
   const question = await Question.findById(questionId);
   const testCases = question.testCases;
 
@@ -185,6 +185,8 @@ exports.getAllSubmissions = catchAsyncError(async (req, res, next) => {
     questions,
   });
 });
+
+
 exports.getSubmissionById = catchAsyncError(async (req, res, next) => {
   const requestData = req.body;
   const { userId, questionId } = requestData;

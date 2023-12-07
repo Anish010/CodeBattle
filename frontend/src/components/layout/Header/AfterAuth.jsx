@@ -7,19 +7,21 @@ import Box from "@mui/material/Box";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
+import Cookies from "js-cookie";
 import Logout from "@mui/icons-material/Logout";
 import { FaUserAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { BASE_URL } from "../../../services/rootServices";
+// import { BASE_URL } from "../../../services/rootServices";
 import { logout } from "../../../reducers/userReducer";
-import axios from 'axios';
+// import axios from 'axios';
 
 const AfterAuth = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   
-
+const userId = useSelector((state) => state.user.id);
   const dispatch = useDispatch();  
   const navigate = useNavigate();
 
@@ -32,14 +34,16 @@ const AfterAuth = () => {
   };
 
   const openProfile = () => {
-    navigate("#")
+    navigate(`/profile/${userId}`)
   };
 
 const handleLogout = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/logout`);
+    // const response = await axios.post(`${BASE_URL}/logout`);
     // You can handle the response or any necessary actions after logout here.
-    console.log('Logged out successfully', response.data);
+    // console.log('Logged out successfully', response.data);
+    localStorage.clear();
+    Cookies.remove("authToken");
     dispatch(logout())
       navigate("/")
   } catch (error) {

@@ -3,6 +3,9 @@ import Lottie from "react-lottie";
 import ComingSoon from "../../animations/ComingSoon.json";
 import UnderDev from "../../animations/UnderDev.json";
 import "./discussion.css"
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 const Discussion = () => {
   const ComingSoonLottie = {
@@ -21,6 +24,16 @@ const Discussion = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      navigate("/");
+  }
+  })
+  
   return (
     <Fragment>
       <div className="discussion">

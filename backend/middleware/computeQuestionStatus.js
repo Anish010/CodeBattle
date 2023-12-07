@@ -6,7 +6,7 @@ const catchAsyncError = require("./catchAsyncError");
 
 const computeQuestionStatus = (question, user) => {
   let status = '3'; // Default status
-
+  console.log(user)
   const userAttempt = user.questionAttempted.find(
     (qa) => qa.questionId.toString() === question._id.toString()
   );
@@ -35,4 +35,3 @@ module.exports = catchAsyncError( async (req, res, next) => {
 
   next();
 });
-

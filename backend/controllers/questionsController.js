@@ -50,6 +50,18 @@ exports.createQuestion = catchAsyncError(async (req, res, next) => {
   }
 });
 
+// Get total number of questions
+exports.getTotalQuestions = catchAsyncError(async (req, res) => {
+  // Fetch the total number of questions
+  const totalQuestions = await Question.countDocuments();
+
+  res.status(200).json({
+    success: true,
+    totalQuestions,
+  });
+});
+
+
 exports.getAllQuestions = [
   computeQuestionStatusMiddleware, // Apply the middleware here
 
@@ -57,12 +69,18 @@ exports.getAllQuestions = [
     // Fetch all questions
     const questions = await Question.find();
 
+    const userId = req.body.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
     // Create an array to store the results
     const questionResults = [];
 
     // Loop through each question and compute the status
     for (const question of questions) {
-      const status = req.computeQuestionStatus(question);
+      const status = req.computeQuestionStatus(question, user);
 
       questionResults.push({
         code: question.code,

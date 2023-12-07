@@ -4,8 +4,10 @@ import Submission from "./LeftContainer/Submission/Submission";
 import RightContainer from "./RightContainer/RightContainer";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../services/rootServices";
 import Lottie from "react-lottie";
+import Cookies from "js-cookie";
 import logoIcon from "../../animations/logo_icon.json";
 import axios from "axios";
 import "./editor.css";
@@ -17,6 +19,7 @@ const Editor = () => {
   const [data, setData] = useState({});
   const [submissionKey, setSubmissionKey] = useState(0);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const questionId = params.id;
@@ -25,6 +28,8 @@ const Editor = () => {
       userId: userId,
       questionId: questionId,
     });
+
+    
   }, [params.id, userId]);
 
   const [questionDetails, setQuestionDetails] = useState({
@@ -41,9 +46,20 @@ const Editor = () => {
   };
 
   useEffect(() => {
-    // Fetch question details using Axios
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      navigate("/");
+    }
+
+    const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+  };
+
     axios
-      .get(`${BASE_URL}/question/${params.id}`)
+      .get(`${BASE_URL}/question/${params.id}`, config)
       .then((response) => {
         // Set the question details received from the API in the state
         setQuestionDetails(response.data.data);
@@ -52,7 +68,7 @@ const Editor = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [params.id]);
+  }, [params.id,  navigate]);
 
   const handleToggle = (button) => {
     // console.log(button)

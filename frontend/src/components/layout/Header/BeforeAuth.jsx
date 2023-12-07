@@ -14,6 +14,12 @@ const BeforeAuth = ({
     // resetErrors();
   };
 
+  const handleLoginFailure = () => {
+    setState("failureLoginSnackOpen", true);
+    setState("openLogin", false); // Close the modal
+    // resetErrors();
+  };
+
   const handleSignUpSuccess = () => {
     setState("successSignUpSnackOpen", true);
     setState("openSignUp", false); // Close the modal
@@ -56,6 +62,7 @@ const BeforeAuth = ({
         setState={setState}
         openSignUp={openSignUp}
         handleSignUpSuccess={handleSignUpSuccess}
+        
         customInputStyle={customInputStyle}
         customButtonStyle={customButtonStyle}
       />
@@ -64,6 +71,7 @@ const BeforeAuth = ({
         openLogin={openLogin}
         setState={setState}
         handleLoginSuccess={handleLoginSuccess}
+        handleLoginFailure={handleLoginFailure}
         customInputStyle={customInputStyle}
         customButtonStyle={customButtonStyle}
       />

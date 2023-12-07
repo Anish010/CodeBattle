@@ -1,4 +1,6 @@
 import React from "react";
+import { BASE_URL } from "../../services/rootServices";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -9,6 +11,9 @@ import {
   LinearProgress,
   makeStyles,
 } from "@material-ui/core";
+import { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     textAlign: "center",
+    backgroundColor: "rgba(228, 228, 228, 0.947)", // Dark background color
+
   },
   media: {
     width: "150px",
@@ -29,14 +36,64 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     justifyContent: "space-between",
   },
+  progress: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export default function ProfilePage() {
   const classes = useStyles();
+  const { userId } = useParams();
+
+  const [totalProblems, setTotalProblems] = useState(0);
+  const [solvedProblems, setSolvedProblems] = useState(0);
+  const [progressPercentage, setProgressPercentage] = useState(0);
+
+  useEffect(() => {
+    console.log(userId);
+
+    // Fetch total questions available
+    axios
+      .get(`${BASE_URL}/progress`)
+      .then((response) => {
+        const { totalQuestions } = response.data;
+        console.log(totalQuestions);
+        setTotalProblems(totalQuestions);
+      })
+      .catch((error) => {
+        console.error("Error fetching total questions:", error);
+      });
+
+    // Fetch total problems solved by the user
+    axios
+      .get(`${BASE_URL}/user/${userId}/solvedCounts`)
+      .then((response) => {
+        const { solvedCount } = response.data.data;
+        console.log(solvedCount);
+
+        // Update the state and calculate progress percentage
+        setSolvedProblems(solvedCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching user submission counts:", error);
+      });
+  }, [userId]); // Add userId as a dependency to useEffect
+
+  useEffect(() => {
+    // Calculate progress percentage here, since solvedProblems has been updated
+    if (totalProblems > 0) {
+      const percentage = (solvedProblems / totalProblems) * 100;
+      setProgressPercentage(percentage);
+    }
+  }, [solvedProblems, totalProblems]);
 
   return (
     <Container className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        className="profile_grid_container"
+        style={{ display: "flex", margin: "auto", justifyContent: "center" }}>
         {/* <Grid item lg={4}>
           <Card className={classes.card} component={Paper}>
             <CardMedia
@@ -165,16 +222,16 @@ export default function ProfilePage() {
                   </Typography>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className={classes.card} component={Paper}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Assignment Project Status
-              </Typography>
-              <Typography variant="body2">Web Design</Typography>
-              <LinearProgress variant="determinate" value={80} />
+              <div className={classes.progress}>
+                <Typography variant="h6">Progress</Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={progressPercentage}
+                />
+                <Typography variant="body2" color="textSecondary">
+                  {solvedProblems} out of {totalProblems} problems solved
+                </Typography>
+              </div>
             </CardContent>
           </Card>
         </Grid>

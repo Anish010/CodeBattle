@@ -20,7 +20,9 @@ const Header = () => {
     openSignUp: false,
     openLogin: false,
     successLoginSnackOpen: false,
+    failureLoginSnackOpen: false,
     successSignUpSnackOpen: false,
+    failureSignUpSnackOpen: false,
   };
 
   const [state, setState] = useMultipleState(initialState);
@@ -32,6 +34,8 @@ const Header = () => {
 
     setState("successLoginSnackOpen", false);
     setState("successSignUpSnackOpen", false);
+    setState("failureLoginSnackOpen", false);
+    setState("failureSignUpSnackOpen", false);
   };
 
   const defaultOptions = {
@@ -72,11 +76,27 @@ const Header = () => {
           </Alert>
         </Snackbar>
         <Snackbar
+          open={state.failureLoginSnackOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackClose}>
+          <Alert onClose={handleSnackClose} severity="error">
+            Login Failed!
+          </Alert>
+        </Snackbar>
+        <Snackbar
           open={state.successSignUpSnackOpen}
           autoHideDuration={4000}
           onClose={handleSnackClose}>
           <Alert onClose={handleSnackClose} severity="success">
             Register Successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={state.failureSignUpSnackOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackClose}>
+          <Alert onClose={handleSnackClose} severity="error">
+            Registered Failed!
           </Alert>
         </Snackbar>
         <Snackbar

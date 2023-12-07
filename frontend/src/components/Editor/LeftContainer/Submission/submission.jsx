@@ -4,12 +4,14 @@ import NoData from "../../../../animations/NoData.json";
 import Divider from "@mui/material/Divider";
 import SubmissionTabs from "./SubmissionTab";
 import Lottie from "react-lottie";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import "./submission.css";
 import Stack from "@mui/material/Stack";
 import LoadingSkeleton from "../../../utils/LoadingSkeleton";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setLoading } from "../../../../reducers/loadingReducer"
+import { setLoading } from "../../../../reducers/loadingReducer";
 import axios from "axios";
 import { BASE_URL } from "../../../../services/rootServices";
 
@@ -26,15 +28,25 @@ const Submission = ({ requestData, submissionKey }) => {
   const [submissionData, setSubmissionData] = useState([]);
   const submissionLoading = useSelector((state) => state.loading.status);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      navigate("/");
+    }
+
     dispatch(setLoading(true));
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
+
     axios
-      .post(`${BASE_URL}/submission`, requestData, {
-        headers: {
-          "Content-Type": "application/json", // Set the content type to JSON
-        },
-      })
+      .post(`${BASE_URL}/submission`, requestData, config)
       .then((response) => {
         setSubmissionData(response.data.data.reverse());
         dispatch(setLoading(false));
@@ -45,7 +57,7 @@ const Submission = ({ requestData, submissionKey }) => {
         console.error("Error fetching data:", error);
         dispatch(setLoading(false));
       });
-  }, [requestData, submissionKey]);
+  }, [requestData, submissionKey, dispatch, navigate]);
 
   const style = {
     width: "100%",

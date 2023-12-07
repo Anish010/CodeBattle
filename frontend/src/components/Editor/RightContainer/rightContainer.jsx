@@ -6,7 +6,11 @@ import ButtonComp from "../../utils/ButtonComp";
 import { BASE_URL } from "../../../services/rootServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../../reducers/userReducer"
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./rightContainer.css";
 
 const RightContainer = ({
@@ -25,6 +29,9 @@ const RightContainer = ({
     userCode: "",
   });
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setSubmitData({
       questionId: requestData.questionId,
@@ -33,16 +40,25 @@ const RightContainer = ({
     });
   }, [userCode, requestData.questionId, requestData.userId]);
 
+  
+  const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      navigate("/");
+  }
+  const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+  };
+  
   const handleSubmit = async () => {
-    
+  
     setError(null); // Clear any previous errors
     setLoading(true);
     axios
-      .post(`${BASE_URL}/submitQuestion`, submitData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(`${BASE_URL}/submitQuestion`, submitData,
+        config)
       .then((response) => {
         setLoading(false);
         setActiveButton("submission");
@@ -57,6 +73,7 @@ const RightContainer = ({
       })
       .catch((error) => {
         // Handle errors
+
         console.error("Error submitting data:", error);
         setLoading(false);
         setActiveButton("submission");
@@ -66,11 +83,16 @@ const RightContainer = ({
             // User code error
             console.error("Server error: " + error.response.data.message);
             setError(error.response.data.message);
+          } else if (error.response && error.response.status === 401) {
+            // Unauthorized, clear authToken and redirect to login
+            localStorage.clear();
+            Cookies.remove("authToken");
+            dispatch(resetUser());
+            navigate("/");
           } else {
             // Other server error
             console.error("Server error: " + error.response.data.message);
             setError("Server error: " + error.response.data.message);
-            
           }
         } else {
           // Network error or other client-side error
@@ -109,7 +131,12 @@ const RightContainer = ({
           onClick={handleSubmit}
         />
         {loading ? (
-          <CircularProgress className="loading-icon" size={35} thickness={6} value={100} />
+          <CircularProgress
+            className="loading-icon"
+            size={35}
+            thickness={6}
+            value={100}
+          />
         ) : (
           <></>
         )}
